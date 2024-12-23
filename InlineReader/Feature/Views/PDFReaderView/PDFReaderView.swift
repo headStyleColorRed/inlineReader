@@ -62,22 +62,63 @@ struct PDFKitRepresentedView: View {
 struct SelectableTextView: UIViewRepresentable {
     let text: String
 
-    func makeUIView(context: Context) -> UITextView {
-        let textView = UITextView(frame: .zero)
+    func makeUIView(context: Context) -> CustomTextView {
+        let textView = CustomTextView(frame: .zero)
         textView.text = text
         print("Creating UITextView with text: \(text)")
         textView.isEditable = false
         textView.isSelectable = true
         textView.isUserInteractionEnabled = true
         textView.isScrollEnabled = true
-        textView.backgroundColor = UIColor.lightGray
-        textView.textColor = UIColor.black
+        textView.textColor = UIColor.white
+
+        // Setup gesture recognizer to show menu on tap
+        let tapGesture = UITapGestureRecognizer(target: textView, action: #selector(textView.showMenu(_:)))
+        textView.addGestureRecognizer(tapGesture)
+
         return textView
     }
 
-    func updateUIView(_ uiView: UITextView, context: Context) {
+    func updateUIView(_ uiView: CustomTextView, context: Context) {
         print("Updating UITextView with text: \(text)")
         uiView.text = text
         uiView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+    }
+}
+
+class CustomTextView: UITextView {
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
+    // Enable custom actions
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if action == #selector(customCopy(_:)) || action == #selector(chat(_:)) {
+            return true
+        }
+        return false
+    }
+
+    // Custom copy action
+    @objc func customCopy(_ sender: Any?) {
+        UIPasteboard.general.string = self.text
+        print("Custom copy action performed.")
+    }
+
+    // Custom chat action
+    @objc func chat(_ sender: Any?) {
+        // Implement your chat functionality here
+        print("Chat action performed.")
+    }
+
+    @objc func showMenu(_ sender: UITapGestureRecognizer) {
+        self.becomeFirstResponder()
+        let customCopyItem = UIMenuItem(title: "Copy", action: #selector(customCopy(_:)))
+        let chatItem = UIMenuItem(title: "Chat", action: #selector(chat(_:)))
+        UIMenuController.shared.menuItems = [customCopyItem, chatItem]
+        if let tapLocation = sender.view?.bounds {
+            UIMenuController.shared.setTargetRect(tapLocation, in: sender.view!)
+            UIMenuController.shared.setMenuVisible(true, animated: true)
+        }
     }
 }
