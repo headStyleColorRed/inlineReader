@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftData
-
+import UniformTypeIdentifiers
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
@@ -54,18 +54,4 @@ struct ContentView: View {
 #Preview(traits: .landscapeLeft) {
     ContentView()
         .modelContainer(for: File.self, inMemory: true)
-}
-
-
-import UniformTypeIdentifiers
-
-struct ImportView: View {
-
-    var body: some View {
-        VStack {
-            Button("Select PDF Files") {
-            }
-        }
-        .navigationTitle("Import PDFs")
-    }
 }
