@@ -86,7 +86,7 @@ struct HomeView: View {
         .onAppear {
             // for testing purposes import the "test.pdf" file only if the files array is empty
             if files.isEmpty {
-                if let url = Bundle.main.url(forResource: "test", withExtension: "pdf") {
+                if let url = Bundle.main.url(forResource: "lorem", withExtension: "pdf") {
                     let file = File(url: url)
                     modelContext.insert(file)
                 }
