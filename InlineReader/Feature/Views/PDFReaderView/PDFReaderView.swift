@@ -72,10 +72,6 @@ struct SelectableTextView: UIViewRepresentable {
         textView.isScrollEnabled = true
         textView.textColor = UIColor.white
 
-        // Setup gesture recognizer to show menu on tap
-        let tapGesture = UITapGestureRecognizer(target: textView, action: #selector(textView.showMenu(_:)))
-        textView.addGestureRecognizer(tapGesture)
-
         return textView
     }
 
@@ -86,7 +82,22 @@ struct SelectableTextView: UIViewRepresentable {
     }
 }
 
-class CustomTextView: UITextView {
+class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
+    override init(frame: CGRect, textContainer: NSTextContainer?) {
+        super.init(frame: frame, textContainer: textContainer)
+        setupEditMenuInteraction()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupEditMenuInteraction()
+    }
+
+    private func setupEditMenuInteraction() {
+        let interaction = UIEditMenuInteraction(delegate: self)
+        self.addInteraction(interaction)
+    }
+
     override var canBecomeFirstResponder: Bool {
         return true
     }
@@ -101,24 +112,29 @@ class CustomTextView: UITextView {
 
     // Custom copy action
     @objc func customCopy(_ sender: Any?) {
+        print("Starting custom copy action")
         UIPasteboard.general.string = self.text
-        print("Custom copy action performed.")
+        print("Custom copy action performed. Copied text: \(String(describing: self.text))")
     }
 
     // Custom chat action
     @objc func chat(_ sender: Any?) {
+        print("Starting chat action")
         // Implement your chat functionality here
         print("Chat action performed.")
     }
 
-    @objc func showMenu(_ sender: UITapGestureRecognizer) {
-        self.becomeFirstResponder()
-        let customCopyItem = UIMenuItem(title: "Copy", action: #selector(customCopy(_:)))
-        let chatItem = UIMenuItem(title: "Chat", action: #selector(chat(_:)))
-        UIMenuController.shared.menuItems = [customCopyItem, chatItem]
-        if let tapLocation = sender.view?.bounds {
-            UIMenuController.shared.setTargetRect(tapLocation, in: sender.view!)
-            UIMenuController.shared.setMenuVisible(true, animated: true)
+    override func editMenu(for textRange: UITextRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
+        print("Creating edit menu for text range: \(textRange)")
+        let customCopyAction = UIAction(title: "Copy", image: nil) { _ in
+            print("Copy action selected from menu")
+            self.customCopy(nil)
         }
+
+        let chatAction = UIAction(title: "Chat", image: nil) { _ in
+            print("Chat action selected from menu")
+            self.chat(nil)
+        }
+        return UIMenu(children: [customCopyAction, chatAction])
     }
 }
