@@ -15,6 +15,7 @@ final class File {
     var url: URL
     var progress: Int
     var dateAdded: Date
+    var lastOpened: Date?
 
     init(url: URL) {
         self.id = UUID()
@@ -22,5 +23,10 @@ final class File {
         self.url = url
         self.progress = 0
         self.dateAdded = Date()
+        self.lastOpened = nil
+    }
+
+    func updateLastOpened() {
+        self.lastOpened = Date()
     }
 }
