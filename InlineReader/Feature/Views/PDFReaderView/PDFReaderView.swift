@@ -41,7 +41,6 @@ struct PDFKitRepresentedView: View {
                 }
                 pdfText = fullText.isEmpty ? "No text found in PDF." : fullText
                 print("PDF text loaded successfully.")
-                print("PDF text: \(pdfText)")
             } else {
                 print("Failed to load PDF document.")
                 pdfText = "Failed to load PDF document."
@@ -65,7 +64,6 @@ struct SelectableTextView: UIViewRepresentable {
     func makeUIView(context: Context) -> CustomTextView {
         let textView = CustomTextView(frame: .zero)
         textView.text = text
-        print("Creating UITextView with text: \(text)")
         textView.isEditable = false
         textView.isSelectable = true
         textView.isUserInteractionEnabled = true
