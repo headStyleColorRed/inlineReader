@@ -11,14 +11,16 @@ import SwiftData
 @Model
 final class File {
     var id: UUID
-    var name: String?
-    var image: String?
+    var name: String
+    var url: URL
     var progress: Int
+    var dateAdded: Date
 
-    init(name: String?, image: String? = nil, progress: Int) {
+    init(url: URL) {
         self.id = UUID()
-        self.name = name
-        self.image = image
-        self.progress = progress
+        self.name = url.lastPathComponent
+        self.url = url
+        self.progress = 0
+        self.dateAdded = Date()
     }
 }
