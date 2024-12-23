@@ -24,23 +24,9 @@ struct ContentView: View {
                     Label("Import", systemImage: "folder")
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-
-                }
-            }
         } detail: {
             HomeView()
         }
-    }
-}
-
-struct DetailView: View {
-    var item: File
-
-    var body: some View {
-        Text("Item at ")
-            .padding()
     }
 }
 
