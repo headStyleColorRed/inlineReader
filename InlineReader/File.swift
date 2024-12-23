@@ -1,5 +1,5 @@
 //
-//  Item.swift
+//  File.swift
 //  InlineReader
 //
 //  Created by Rodrigo Labrador Serrano on 23/12/24.
@@ -10,9 +10,15 @@ import SwiftData
 
 @Model
 final class File {
-    var timestamp: Date
-    
-    init(timestamp: Date) {
-        self.timestamp = timestamp
+    var id: UUID
+    var name: String?
+    var image: String?
+    var progress: Int
+
+    init(name: String?, image: String? = nil, progress: Int) {
+        self.id = UUID()
+        self.name = name
+        self.image = image
+        self.progress = progress
     }
 }
