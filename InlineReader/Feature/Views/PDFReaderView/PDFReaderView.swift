@@ -204,15 +204,23 @@ struct TranslationView: View {
 
     var body: some View {
         ScrollView {
-            VStack {
-                Text("Translation")
+            VStack(alignment: .leading) {
+                Text("Translated Text")
                     .font(.headline)
                     .padding()
                     .fullWidthExpanded()
-                Text(text.text)
-                    .padding()
+
+                VStack {
+                    Text(text.text) // Original selected text
+                        .font(.subheadline)
+                    Text(text.text) // Original selected text
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                }
+
                 Spacer()
             }
+            .padding()
         }
     }
 }
