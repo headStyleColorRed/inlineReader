@@ -15,9 +15,7 @@ class TranslationViewModel: ObservableObject {
 
     init(text: SelectedText) {
         self.textToTranslate = text.text
-        
-        // You'll need to replace this with your actual OpenAI API key
-        self.openAIService = OpenAIService(apiKey: apiKey)
+        self.openAIService = OpenAIService(apiKey: Configuration.openAIApiKey)
     }
 
     @MainActor
