@@ -15,13 +15,37 @@ struct PDFReaderView: View {
 struct PDFKitRepresentedView: View {
     let file: File
     @State private var pdfText: String = ""
+    @State private var showSideView: Bool = false
+    @State private var selectedText: String = ""
 
     var body: some View {
-        SelectableTextView(text: pdfText)
+        HStack {
+            SelectableTextView(text: pdfText, onTextSelected: { text in
+                print("Text selected")
+                selectedText = text
+                toggleSideView()
+            })
             .defersSystemGestures(on: .all)
             .padding()
-        .onAppear {
-            loadPDFText()
+            .onAppear {
+                loadPDFText()
+            }
+
+            if showSideView {
+                VStack {
+                    Text("Translation")
+                        .font(.headline)
+                        .padding()
+                    Text(selectedText)
+                        .padding()
+                    Spacer()
+                }
+                .frame(width: 300)
+                .background(Color.white)
+                .foregroundColor(Color.black)
+                .shadow(radius: 5)
+                .transition(.move(edge: .trailing))
+            }
         }
     }
 
@@ -50,6 +74,12 @@ struct PDFKitRepresentedView: View {
             pdfText = "Document URL not found."
         }
     }
+
+    private func toggleSideView() {
+        withAnimation {
+            showSideView.toggle()
+        }
+    }
 }
 
 #Preview(traits: .landscapeLeft) {
@@ -60,6 +90,7 @@ struct PDFKitRepresentedView: View {
 
 struct SelectableTextView: UIViewRepresentable {
     let text: String
+    var onTextSelected: ((String) -> Void)?
 
     func makeUIView(context: Context) -> CustomTextView {
         let textView = CustomTextView(frame: .zero)
@@ -69,18 +100,20 @@ struct SelectableTextView: UIViewRepresentable {
         textView.isUserInteractionEnabled = true
         textView.isScrollEnabled = true
         textView.textColor = UIColor.white
+        textView.onTextSelected = onTextSelected
 
         return textView
     }
 
     func updateUIView(_ uiView: CustomTextView, context: Context) {
-        print("Updating UITextView with text: \(text)")
         uiView.text = text
         uiView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
     }
 }
 
 class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
+    var onTextSelected: ((String) -> Void)?
+
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         setupEditMenuInteraction()
@@ -102,7 +135,7 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
 
     // Enable custom actions
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        if action == #selector(customCopy(_:)) || action == #selector(chat(_:)) {
+        if action == #selector(customCopy(_:)) || action == #selector(translate(_:)) {
             return true
         }
         return false
@@ -116,10 +149,13 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
     }
 
     // Custom chat action
-    @objc func chat(_ sender: Any?) {
-        print("Starting chat action")
+    @objc func translate(_ sender: Any?) {
+        print("Starting translate action")
+        if let selectedRange = self.selectedTextRange, let selectedText = self.text(in: selectedRange) {
+            onTextSelected?(selectedText)
+        }
         // Implement your chat functionality here
-        print("Chat action performed.")
+        print("Translate action performed.")
     }
 
     override func editMenu(for textRange: UITextRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
@@ -129,9 +165,9 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
             self.customCopy(nil)
         }
 
-        let chatAction = UIAction(title: "Chat", image: nil) { _ in
-            print("Chat action selected from menu")
-            self.chat(nil)
+        let chatAction = UIAction(title: "Translate", image: nil) { _ in
+            print("Translate action selected from menu")
+            self.translate(nil)
         }
         return UIMenu(children: [customCopyAction, chatAction])
     }
