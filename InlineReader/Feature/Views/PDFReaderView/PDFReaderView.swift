@@ -40,19 +40,12 @@ struct PDFKitRepresentedView: View {
             }
         }
         .sheet(item: $selectedText) { text in
-            VStack {
-                Text("Translation")
-                    .font(.headline)
-                    .padding()
-                    .fullWidthExpanded()
-                Text(text.text)
-                    .padding()
-                Spacer()
+            NavigationStack {
+                TranslationView(text: text)
             }
-            .background(Color.white)
-            .foregroundColor(Color.black)
-            .shadow(radius: 5)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .onAppear {
+            selectedText = SelectedText(text: "Lorem ipsum dolor sit amet")
         }
     }
 
@@ -198,5 +191,28 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
             self.translate(nil)
         }
         return UIMenu(children: [customCopyAction, chatAction])
+    }
+}
+
+
+struct TranslationView: View {
+    let text: SelectedText
+
+    init(text: SelectedText) {
+        self.text = text
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack {
+                Text("Translation")
+                    .font(.headline)
+                    .padding()
+                    .fullWidthExpanded()
+                Text(text.text)
+                    .padding()
+                Spacer()
+            }
+        }
     }
 }
