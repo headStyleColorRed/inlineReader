@@ -193,34 +193,3 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
         return UIMenu(children: [customCopyAction, chatAction])
     }
 }
-
-
-struct TranslationView: View {
-    let text: SelectedText
-
-    init(text: SelectedText) {
-        self.text = text
-    }
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                Text("Translated Text")
-                    .font(.headline)
-                    .padding()
-                    .fullWidthExpanded()
-
-                VStack {
-                    Text(text.text) // Original selected text
-                        .font(.subheadline)
-                    Text(text.text) // Original selected text
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
-
-                Spacer()
-            }
-            .padding()
-        }
-    }
-}
