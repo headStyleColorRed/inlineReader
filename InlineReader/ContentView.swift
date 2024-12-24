@@ -28,35 +28,10 @@ struct ContentView: View {
                 } label: {
                     Label("Import", systemImage: "folder")
                 }
-                .fileImporter(
-                    isPresented: $isFilePickerPresented,
-                    allowedContentTypes: [UTType.pdf],
-                    allowsMultipleSelection: true
-                ) { result in
-                    switch result {
-                    case .success(let urls):
-                        for url in urls {
-                            if url.startAccessingSecurityScopedResource() {
-                                do {
-                                    // Define the destination URL in the app's documents directory
-                                    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                                    let destinationURL = documentsDirectory.appendingPathComponent(url.lastPathComponent)
-
-                                    // Copy the file to the app's documents directory
-                                    try FileManager.default.copyItem(at: url, to: destinationURL)
-
-                                    // Create a File object with the new URL and insert it into the context
-                                    let file = File(url: destinationURL)
-                                    modelContext.insert(file)
-                                } catch {
-                                    print("Error copying file: \(error.localizedDescription)")
-                                }
-                                url.stopAccessingSecurityScopedResource()
-                            }
-                        }
-                    case .failure(let error):
-                        print("Error importing files: \(error.localizedDescription)")
-                    }
+                .fileImporter(isPresented: $isFilePickerPresented,
+                              allowedContentTypes: [UTType.pdf],
+                              allowsMultipleSelection: false) { result in
+                    fileImported(result: result)
                 }
 
                 Button {
@@ -70,6 +45,41 @@ struct ContentView: View {
             }
         } detail: {
             HomeView()
+        }
+    }
+
+    func fileImported(result: Result<[URL], any Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first, url.startAccessingSecurityScopedResource() else { return }
+            if url.startAccessingSecurityScopedResource() {
+                do {
+                    guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory,
+                                                                            in: .userDomainMask).first else {
+                        throw "No documents directory found"
+                    }
+
+                    // Define the destination URL in the app's documents directory
+                    let destinationURL = documentsDirectory.appendingPathComponent(url.lastPathComponent)
+
+                    // If file does not exist at destination, copy it
+                    if !FileManager.default.fileExists(atPath: destinationURL.path) {
+                        try FileManager.default.copyItem(at: url, to: destinationURL)
+                    }
+
+                    // If file is not in the model context, add it
+                    if !files.contains(where: { $0.url == destinationURL }) {
+                        let file = File(url: destinationURL)
+                        modelContext.insert(file)
+                    }
+                } catch {
+                    print("Error copying file: \(error.localizedDescription)")
+                }
+                url.stopAccessingSecurityScopedResource()
+            }
+
+        case .failure(let error):
+            print("Error importing files: \(error.localizedDescription)")
         }
     }
 }
