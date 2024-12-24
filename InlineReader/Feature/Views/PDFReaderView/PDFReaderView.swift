@@ -44,9 +44,6 @@ struct PDFKitRepresentedView: View {
                 TranslationView(text: text)
             }
         }
-        .onAppear {
-            selectedText = SelectedText(text: "Lorem ipsum dolor sit amet")
-        }
     }
 
     private func loadPDFText() {
@@ -77,7 +74,7 @@ struct PDFKitRepresentedView: View {
 }
 
 #Preview(traits: .landscapeLeft) {
-    PDFReaderView(file: File(url: URL(fileURLWithPath: "lorem.pdf")))
+    PDFReaderView(file: File(url: URL(fileURLWithPath: "test.pdf")))
         .modelContainer(for: File.self, inMemory: true)
 }
 

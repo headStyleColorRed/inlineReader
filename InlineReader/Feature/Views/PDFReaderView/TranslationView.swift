@@ -9,9 +9,26 @@ import SwiftUI
 
 class TranslationViewModel: ObservableObject {
     @Published var translatedText: String = ""
+    @Published var textToTranslate: String = ""
+    @Published var isLoading: Bool = false
+    private let openAIService: OpenAIService
 
     init(text: SelectedText) {
-        self.translatedText = text.text
+        self.textToTranslate = text.text
+        
+        // You'll need to replace this with your actual OpenAI API key
+        self.openAIService = OpenAIService(apiKey: apiKey)
+    }
+
+    @MainActor
+    func startTranslation() async {
+        isLoading = true
+        do {
+            translatedText = try await openAIService.translate(textToTranslate)
+        } catch {
+            translatedText = "Translation failed: \(error.localizedDescription)"
+        }
+        isLoading = false
     }
 }
 
@@ -30,29 +47,32 @@ struct TranslationView: View {
                     .padding()
                     .fullWidthExpanded()
 
-                VStack {
-                    Text(viewModel.translatedText) // Use viewModel.translatedText
-                        .font(.subheadline)
-                    Text(viewModel.translatedText) // Use viewModel.translatedText
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
+                if viewModel.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding()
+                } else {
+                    VStack {
+                        Text(viewModel.textToTranslate)
+                            .font(.subheadline)
+                        Text(viewModel.translatedText)
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
                 }
 
+                Button("Translate") {
+                    Task {
+                        await viewModel.startTranslation()
+                    }
+                }
                 Spacer()
             }
             .padding()
-            .onAppear {
-                startTranslation()
-            }
         }
-    }
-
-    private func startTranslation() {
-        print("translating text: \(viewModel.translatedText)")
     }
 }
 
-
 #Preview {
-    TranslationView(text: SelectedText(text: "Hello, World!"))
+    TranslationView(text: SelectedText(text: "Hola rodrigo"))
 }
