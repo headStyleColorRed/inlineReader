@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5B18245F2D1ABD6600600BB6 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 5B18245E2D1ABD6600600BB6 /* Apollo */; };
+		5B1824622D1ABD9300600BB6 /* ObjectMapper in Frameworks */ = {isa = PBXBuildFile; productRef = 5B1824612D1ABD9300600BB6 /* ObjectMapper */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		5B4E4C162D19B0BD00F9D33D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B1824622D1ABD9300600BB6 /* ObjectMapper in Frameworks */,
+				5B18245F2D1ABD6600600BB6 /* Apollo in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +119,8 @@
 			);
 			name = InlineReader;
 			packageProductDependencies = (
+				5B18245E2D1ABD6600600BB6 /* Apollo */,
+				5B1824612D1ABD9300600BB6 /* ObjectMapper */,
 			);
 			productName = InlineReader;
 			productReference = 5B4E4C032D19B0BB00F9D33D /* InlineReader.app */;
@@ -195,6 +204,10 @@
 			);
 			mainGroup = 5B4E4BFA2D19B0BB00F9D33D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				5B18245D2D1ABD6500600BB6 /* XCRemoteSwiftPackageReference "apollo-ios" */,
+				5B1824602D1ABD9300600BB6 /* XCRemoteSwiftPackageReference "ObjectMapper" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5B4E4C042D19B0BB00F9D33D /* Products */;
 			projectDirPath = "";
@@ -568,6 +581,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5B18245D2D1ABD6500600BB6 /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.15.3;
+			};
+		};
+		5B1824602D1ABD9300600BB6 /* XCRemoteSwiftPackageReference "ObjectMapper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tristanhimmelman/ObjectMapper.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.4.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5B18245E2D1ABD6600600BB6 /* Apollo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5B18245D2D1ABD6500600BB6 /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = Apollo;
+		};
+		5B1824612D1ABD9300600BB6 /* ObjectMapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5B1824602D1ABD9300600BB6 /* XCRemoteSwiftPackageReference "ObjectMapper" */;
+			productName = ObjectMapper;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5B4E4BFB2D19B0BB00F9D33D /* Project object */;
 }

@@ -11,41 +11,48 @@ struct PDFReaderView: View {
     }
 }
 
+struct SelectedText: Identifiable {
+    let id: UUID
+    let text: String
+
+    init(text: String) {
+        self.id = UUID()
+        self.text = text
+    }
+}
+
 // Custom UIViewRepresentable to integrate PDFKit with SwiftUI
 struct PDFKitRepresentedView: View {
     let file: File
     @State private var pdfText: String = ""
-    @State private var showSideView: Bool = false
-    @State private var selectedText: String = ""
+    @State private var selectedText: SelectedText? = nil
 
     var body: some View {
         HStack {
             SelectableTextView(text: pdfText, onTextSelected: { text in
                 print("Text selected")
-                selectedText = text
-                toggleSideView()
+                selectedText = SelectedText(text: text)
             })
             .defersSystemGestures(on: .all)
-            .padding()
+            .padding(EdgeInsets(top: 20, leading: 100, bottom: 20, trailing: 100))
             .onAppear {
                 loadPDFText()
             }
-
-            if showSideView {
-                VStack {
-                    Text("Translation")
-                        .font(.headline)
-                        .padding()
-                    Text(selectedText)
-                        .padding()
-                    Spacer()
-                }
-                .frame(width: 300)
-                .background(Color.white)
-                .foregroundColor(Color.black)
-                .shadow(radius: 5)
-                .transition(.move(edge: .trailing))
+        }
+        .sheet(item: $selectedText) { text in
+            VStack {
+                Text("Translation")
+                    .font(.headline)
+                    .padding()
+                    .fullWidthExpanded()
+                Text(text.text)
+                    .padding()
+                Spacer()
             }
+            .background(Color.white)
+            .foregroundColor(Color.black)
+            .shadow(radius: 5)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
@@ -74,16 +81,10 @@ struct PDFKitRepresentedView: View {
             pdfText = "Document URL not found."
         }
     }
-
-    private func toggleSideView() {
-        withAnimation {
-            showSideView.toggle()
-        }
-    }
 }
 
 #Preview(traits: .landscapeLeft) {
-    ContentView()
+    PDFReaderView(file: File(url: URL(fileURLWithPath: "lorem.pdf")))
         .modelContainer(for: File.self, inMemory: true)
 }
 
@@ -101,6 +102,9 @@ struct SelectableTextView: UIViewRepresentable {
         textView.isScrollEnabled = true
         textView.textColor = UIColor.white
         textView.onTextSelected = onTextSelected
+        textView.font = UIFont.systemFont(ofSize: 16)
+        textView.textContainer.lineFragmentPadding = 8
+        textView.textContainer.lineBreakMode = .byWordWrapping
 
         return textView
     }
