@@ -7,11 +7,19 @@
 
 import SwiftUI
 
-struct TranslationView: View {
-    let text: SelectedText
+class TranslationViewModel: ObservableObject {
+    @Published var translatedText: String = ""
 
     init(text: SelectedText) {
-        self.text = text
+        self.translatedText = text.text
+    }
+}
+
+struct TranslationView: View {
+    @StateObject var viewModel: TranslationViewModel
+
+    init(text: SelectedText) {
+        _viewModel = StateObject(wrappedValue: TranslationViewModel(text: text))
     }
 
     var body: some View {
@@ -23,9 +31,9 @@ struct TranslationView: View {
                     .fullWidthExpanded()
 
                 VStack {
-                    Text(text.text) // Original selected text
+                    Text(viewModel.translatedText) // Use viewModel.translatedText
                         .font(.subheadline)
-                    Text(text.text) // Original selected text
+                    Text(viewModel.translatedText) // Use viewModel.translatedText
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 }
@@ -40,7 +48,7 @@ struct TranslationView: View {
     }
 
     private func startTranslation() {
-        print("translating  text: \(text.text)")
+        print("translating text: \(viewModel.translatedText)")
     }
 }
 
