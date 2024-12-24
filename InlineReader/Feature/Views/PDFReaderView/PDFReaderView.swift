@@ -34,7 +34,7 @@ struct PDFKitRepresentedView: View {
                 selectedText = SelectedText(text: text)
             })
             .defersSystemGestures(on: .all)
-            .padding(EdgeInsets(top: 20, leading: 100, bottom: 20, trailing: 100))
+            .padding(EdgeInsets(top: 20, leading: 200, bottom: 20, trailing: 200))
             .onAppear {
                 loadPDFText()
             }
@@ -95,7 +95,6 @@ struct SelectableTextView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> CustomTextView {
         let textView = CustomTextView(frame: .zero)
-        textView.text = text
         textView.isEditable = false
         textView.isSelectable = true
         textView.isUserInteractionEnabled = true
@@ -106,11 +105,36 @@ struct SelectableTextView: UIViewRepresentable {
         textView.textContainer.lineFragmentPadding = 8
         textView.textContainer.lineBreakMode = .byWordWrapping
 
+        // Set the line spacing
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 10 // Adjust the line spacing as needed
+
+        // Ensure the text color is set in the attributes
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 16),
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: UIColor.white // Ensure text color is set
+        ]
+
+        let attributedString = NSAttributedString(string: text, attributes: attributes)
+        textView.attributedText = attributedString
+
         return textView
     }
 
     func updateUIView(_ uiView: CustomTextView, context: Context) {
-        uiView.text = text
+        // Update the attributed text with line spacing
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 10 // Ensure the line spacing is consistent
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 16),
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: UIColor.white // Ensure text color is set
+        ]
+
+        let attributedString = NSAttributedString(string: text, attributes: attributes)
+        uiView.attributedText = attributedString
         uiView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
     }
 }
