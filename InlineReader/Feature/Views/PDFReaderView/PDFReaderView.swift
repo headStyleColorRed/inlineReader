@@ -10,6 +10,14 @@ struct PDFReaderView: View {
     @Environment(\.dismiss) private var dismiss
 
     private let file: File
+    private var document: PDFDocument? {
+        guard let url = file.fullURL else { return nil }
+        return PDFDocument(url: url)
+    }
+    private var lastPage: Int {
+        guard let document else { return 0 }
+        return document.pageCount - 1
+    }
 
     init(file: File) {
         self.file = file
@@ -59,6 +67,35 @@ struct PDFReaderView: View {
                     }) {
                         Image(systemName: "gearshape")
                     }
+                }
+
+                ToolbarItemGroup(placement: .bottomBar) {
+                    Button(action: {
+                        if file.currentPage > 0 {
+                            file.currentPage -= 1
+                            loadPDFText()
+                        }
+                    }) {
+                        Image(systemName: "chevron.left")
+                    }
+                    .disabled(file.currentPage <= 0)
+
+                    Spacer()
+
+                    // Page number
+                    Text("\(file.currentPage + 1) / \(lastPage)")
+
+                    Spacer()
+
+                    Button(action: {
+                        if file.currentPage < lastPage {
+                            file.currentPage += 1
+                            loadPDFText()
+                        }
+                    }) {
+                        Image(systemName: "chevron.right")
+                    }
+                    .disabled(file.currentPage >= lastPage)
                 }
             }
         }
