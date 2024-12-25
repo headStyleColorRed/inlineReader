@@ -16,7 +16,7 @@ final class File: CustomStringConvertible, Equatable {
     var dateAdded: Date
     var lastOpened: Date?
     private var url: String
-    var settings: Settings?
+    var settings: Settings
 
     init(url: URL) {
         self.id = UUID()

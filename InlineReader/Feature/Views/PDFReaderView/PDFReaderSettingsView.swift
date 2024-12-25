@@ -6,13 +6,21 @@ struct PDFReaderSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var file: File
 
+    @State private var languageOfTranslation: Language
+    @State private var fontSize: Double
+    @State private var textAlignment: TextAlignment
+
+    init(file: File) {
+        self.file = file
+        _languageOfTranslation = State(initialValue: file.settings.languageOfTranslation)
+        _fontSize = State(initialValue: file.settings.fontSize)
+        _textAlignment = State(initialValue: file.settings.textAlignment)
+    }
+
     var body: some View {
         Form {
             Section("Translation") {
-                Picker("Language of Translation", selection: .init(
-                    get: { Language(rawValue: file.settings?.languageOfTranslation ?? .undetermined) ?? .undetermined },
-                    set: { file.settings?.languageOfTranslation = $0 }
-                )) {
+                Picker("Language of Translation", selection: $languageOfTranslation) {
                     ForEach(Language.allCases, id: \.self) { language in
                         Text(language.rawValue.capitalized).tag(language)
                     }
@@ -23,16 +31,11 @@ struct PDFReaderSettingsView: View {
                 HStack {
                     Text("Font Size")
                     Spacer()
-                    Slider(value: .init(
-                        get: { file.settings?.fontSize ?? 16.0 },
-                        set: { file.settings?.fontSize = $0 }
-                    ), in: 8...32, step: 1.0)
+                    Slider(value: $fontSize, in: 8...32, step: 1.0)
+                    Text("\(fontSize, specifier: "%.0f")")
                 }
 
-                Picker("Text Alignment", selection: .init(
-                    get: { file.settings?.textAlignment ?? .left },
-                    set: { file.settings?.textAlignment = $0 }
-                )) {
+                Picker("Text Alignment", selection: $textAlignment) {
                     Text("Left to Right").tag(TextAlignment.left)
                     Text("Right to Left").tag(TextAlignment.right)
                 }
@@ -42,7 +45,10 @@ struct PDFReaderSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Done") {
+                Button("Save") {
+                    file.settings.languageOfTranslation = languageOfTranslation
+                    file.settings.fontSize = fontSize
+                    file.settings.textAlignment = textAlignment
                     dismiss()
                 }
             }

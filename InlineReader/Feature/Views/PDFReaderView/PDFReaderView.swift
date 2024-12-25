@@ -18,7 +18,7 @@ struct PDFReaderView: View {
     var body: some View {
         NavigationView {
             HStack {
-                SelectableTextView(text: pdfText, onTextSelected: { text in
+                SelectableTextView(text: pdfText, options: file.settings, onTextSelected: { text in
                     print("Text selected")
                     selectedText = SelectedText(text: text)
                 })

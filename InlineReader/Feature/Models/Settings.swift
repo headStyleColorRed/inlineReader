@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import SwiftUI
 
 @Model
 final class Settings {
@@ -19,4 +20,13 @@ final class Settings {
 enum TextAlignment: String, Codable {
     case left
     case right
+
+    var appleAlignment: NSTextAlignment {
+        switch self {
+        case .left:
+            return .left
+        case .right:
+            return .right
+        }
+    }
 }

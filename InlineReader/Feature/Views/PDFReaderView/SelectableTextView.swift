@@ -1,7 +1,9 @@
 import SwiftUI
 
+
 struct SelectableTextView: UIViewRepresentable {
     let text: String
+    let options: Settings
     var onTextSelected: ((String) -> Void)?
 
     func makeUIView(context: Context) -> CustomTextView {
@@ -12,9 +14,10 @@ struct SelectableTextView: UIViewRepresentable {
         textView.isScrollEnabled = true
         textView.textColor = UIColor.white
         textView.onTextSelected = onTextSelected
-        textView.font = UIFont.systemFont(ofSize: 16)
+        textView.font = UIFont.systemFont(ofSize: options.fontSize)
         textView.textContainer.lineFragmentPadding = 8
         textView.textContainer.lineBreakMode = .byWordWrapping
+        textView.textAlignment = options.textAlignment.appleAlignment
 
         // Set the line spacing
         let paragraphStyle = NSMutableParagraphStyle()
@@ -22,7 +25,7 @@ struct SelectableTextView: UIViewRepresentable {
 
         // Ensure the text color is set in the attributes
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 16),
+            .font: UIFont.systemFont(ofSize: options.fontSize),
             .paragraphStyle: paragraphStyle,
             .foregroundColor: UIColor.white // Ensure text color is set
         ]
@@ -39,7 +42,7 @@ struct SelectableTextView: UIViewRepresentable {
         paragraphStyle.lineSpacing = 10 // Ensure the line spacing is consistent
 
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 16),
+            .font: UIFont.systemFont(ofSize: options.fontSize),
             .paragraphStyle: paragraphStyle,
             .foregroundColor: UIColor.white // Ensure text color is set
         ]
