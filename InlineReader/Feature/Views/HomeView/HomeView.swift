@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
-    @EnvironmentObject var viewModel: MainViewModel
+    @EnvironmentObject var mainViewModel: MainViewModel
     @Query private var files: [File]
     @State private var gridColumns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 3)
 
@@ -38,7 +38,7 @@ struct HomeView: View {
             } else {
                 LazyVGrid(columns: gridColumns, spacing: 16) {
                     ForEach(sortedFiles) { file in
-                        NavigationLink(destination: PDFReaderView(file: file).environmentObject(viewModel)) {
+                        NavigationLink(destination: PDFReaderView(file: file).environmentObject(mainViewModel)) {
                             VStack {
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(Color.gray.opacity(0.2))
@@ -84,7 +84,7 @@ struct HomeView: View {
         }
         .navigationTitle("Library")
         .onAppear {
-            viewModel.columnVisibility = .all
+            mainViewModel.columnVisibility = .all
         }
     }
 }
