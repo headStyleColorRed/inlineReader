@@ -73,8 +73,9 @@ struct PDFReaderView: View {
 
         print("Document URL: \(documentURL)")
         if let document = PDFDocument(url: documentURL) {
+            let startPage = file.settings.startAtPage < document.pageCount ? file.settings.startAtPage : 0
             var fullText = ""
-            for pageIndex in 0..<document.pageCount {
+            for pageIndex in startPage..<document.pageCount {
                 if let page = document.page(at: pageIndex) {
                     if let pageText = page.string {
                         fullText += pageText

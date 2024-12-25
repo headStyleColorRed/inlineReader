@@ -7,6 +7,7 @@ final class Settings {
     var languageOfTranslation: Language
     var fontSize: Double
     var textAlignment: TextAlignment
+    var startAtPage: Int = 0
 
     init(languageOfTranslation: Language = .english,
          fontSize: Double = 16.0,
