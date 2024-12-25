@@ -6,6 +6,7 @@ struct PDFReaderView: View {
     @StateObject private var viewModel = PDFReaderViewModel()
     @State private var pdfText: String = ""
     @State private var selectedText: SelectedText? = nil
+    @State private var showSettings = false
     @Environment(\.dismiss) private var dismiss
 
     private let file: File
@@ -33,6 +34,11 @@ struct PDFReaderView: View {
                     TranslationView(text: text)
                 }
             }
+            .sheet(isPresented: $showSettings) {
+                NavigationStack {
+                    PDFReaderSettingsView(file: file)
+                }
+            }
             .onAppear {
                 file.updateLastOpened()
             }
@@ -49,7 +55,7 @@ struct PDFReaderView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        print("Settings button pressed")
+                        showSettings = true
                     }) {
                         Image(systemName: "gearshape")
                     }

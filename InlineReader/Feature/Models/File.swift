@@ -16,6 +16,7 @@ final class File: CustomStringConvertible, Equatable {
     var dateAdded: Date
     var lastOpened: Date?
     private var url: String
+    var settings: Settings?
 
     init(url: URL) {
         self.id = UUID()
@@ -26,6 +27,7 @@ final class File: CustomStringConvertible, Equatable {
         self.url = url.lastPathComponent
         // The name will be the last path component without the extension
         self.name = url.lastPathComponent.replacingOccurrences(of: ".\(url.pathExtension)", with: "")
+        self.settings = Settings()
     }
 
     func updateLastOpened() {

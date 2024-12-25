@@ -13,6 +13,7 @@ struct InlineReaderApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             File.self,
+            Settings.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
