@@ -36,6 +36,7 @@ struct PDFReaderView: View {
             }
         }
         .onAppear {
+            file.updateLastOpened()
             mainViewModel.columnVisibility = .detailOnly
         }
         .onDisappear {
