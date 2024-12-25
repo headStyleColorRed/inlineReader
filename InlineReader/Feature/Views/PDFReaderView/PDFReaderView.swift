@@ -73,17 +73,17 @@ struct PDFReaderView: View {
 
         print("Document URL: \(documentURL)")
         if let document = PDFDocument(url: documentURL) {
-            let startPage = file.settings.startAtPage < document.pageCount ? file.settings.startAtPage : 0
-            var fullText = ""
-            for pageIndex in startPage..<document.pageCount {
-                if let page = document.page(at: pageIndex) {
-                    if let pageText = page.string {
-                        fullText += pageText
-                    }
+            let currentPage = file.currentPage < document.pageCount ? file.currentPage : 0
+            if let page = document.page(at: currentPage) {
+                if let pageText = page.string {
+                    pdfText = pageText.isEmpty ? "No text found on this page." : pageText
+                } else {
+                    pdfText = "No text found on this page."
                 }
+            } else {
+                pdfText = "Failed to load page."
             }
-            pdfText = fullText.isEmpty ? "No text found in PDF." : fullText
-            print("PDF text loaded successfully.")
+            print("PDF text for page \(currentPage) loaded successfully.")
         } else {
             print("Failed to load PDF document.")
             pdfText = "Failed to load PDF document."
