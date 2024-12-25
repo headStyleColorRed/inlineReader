@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
+    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var mainViewModel: MainViewModel
     @Query private var files: [File]
     @State private var gridColumns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 3)
@@ -77,6 +78,24 @@ struct HomeView: View {
                             .shadow(radius: 2)
                         }
                         .buttonStyle(PlainButtonStyle())
+                        .contextMenu {
+//                            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+
+                            Button(action: {
+                                modelContext.delete(file)
+                            }) {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            .onAppear {
+                                print("Context menu appeared")
+                            }
+
+                            Button(action: {
+                                file.progress = 0
+                            }) {
+                                Label("Reset Progress", systemImage: "arrow.counterclockwise")
+                            }
+                        }
                     }
                 }
                 .padding()
