@@ -21,15 +21,31 @@ struct SelectedText: Identifiable {
     }
 }
 
+class PDFReaderViewModel: ObservableObject {
+    @Published var loading = true
+
+    init() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
+            self.loading = false
+        }
+    }
+}
+
 // Custom UIViewRepresentable to integrate PDFKit with SwiftUI
 struct PDFKitRepresentedView: View {
-    @EnvironmentObject var viewModel: MainViewModel
-    let file: File
+    @EnvironmentObject var mainViewModel: MainViewModel
+    @StateObject private var viewModel = PDFReaderViewModel()
     @State private var pdfText: String = ""
     @State private var selectedText: SelectedText? = nil
 
+    private let file: File
+
+    init(file: File) {
+        self.file = file
+    }
+
     private var padding: CGFloat {
-        viewModel.columnVisibility == .detailOnly ? 200 : 50
+        mainViewModel.columnVisibility == .detailOnly ? 200 : 50
     }
 
     var body: some View {
@@ -44,16 +60,17 @@ struct PDFKitRepresentedView: View {
                 loadPDFText()
             }
         }
+        .withLoader(loading: $viewModel.loading)
         .sheet(item: $selectedText) { text in
             NavigationStack {
                 TranslationView(text: text)
             }
         }
         .onAppear {
-            viewModel.columnVisibility = .detailOnly
+            mainViewModel.columnVisibility = .detailOnly
         }
         .onDisappear {
-            viewModel.columnVisibility = .all
+            mainViewModel.columnVisibility = .all
         }
     }
 

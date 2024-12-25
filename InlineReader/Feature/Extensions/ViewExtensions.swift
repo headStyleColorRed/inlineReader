@@ -356,3 +356,40 @@ private struct FirstAppear: ViewModifier {
         }
     }
 }
+
+
+extension View {
+    func withLoader(loading: Binding<Bool>, color: UIColor = .gray,
+                    radius: CGFloat = 25, strokeWidth: CGFloat = 5) -> some View {
+        modifier(LoaderModifierView(loading: loading, color: color, radius: radius, strokeWidth: strokeWidth))
+    }
+}
+
+struct LoaderModifierView: ViewModifier {
+    @Binding var loading: Bool
+    var color: UIColor
+    var radius: CGFloat
+    var strokeWidth: CGFloat
+
+    func body(content: Content) -> some View {
+        if loading {
+            VStack {
+                Spacer()
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .tint(Color(color))
+                Spacer()
+            }
+            .frame(height: UIScreen.main.bounds.height)
+        } else {
+            content
+        }
+    }
+
+    public init(loading: Binding<Bool>, color: UIColor, radius: CGFloat, strokeWidth: CGFloat) {
+        self._loading = loading
+        self.color = color
+        self.radius = radius
+        self.strokeWidth = strokeWidth
+    }
+}
