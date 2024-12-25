@@ -43,7 +43,15 @@ struct PDFReaderView: View {
                     Button(action: {
                         dismiss()
                     }) {
-                        Image(systemName: "xmark.circle")
+                        Text("Close")
+                    }
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        print("Settings button pressed")
+                    }) {
+                        Image(systemName: "gearshape")
                     }
                 }
             }
