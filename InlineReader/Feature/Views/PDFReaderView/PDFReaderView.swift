@@ -23,6 +23,7 @@ struct SelectedText: Identifiable {
 
 // Custom UIViewRepresentable to integrate PDFKit with SwiftUI
 struct PDFKitRepresentedView: View {
+    @EnvironmentObject var viewModel: MainViewModel
     let file: File
     @State private var pdfText: String = ""
     @State private var selectedText: SelectedText? = nil
@@ -43,6 +44,12 @@ struct PDFKitRepresentedView: View {
             NavigationStack {
                 TranslationView(text: text)
             }
+        }
+        .onAppear {
+            viewModel.columnVisibility = .detailOnly
+        }
+        .onDisappear {
+            viewModel.columnVisibility = .all
         }
     }
 

@@ -9,16 +9,22 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
+class MainViewModel: ObservableObject {
+    @Published var columnVisibility = NavigationSplitViewVisibility.all
+}
+
 struct Mainview: View {
+    @StateObject private var viewModel = MainViewModel()
     @Environment(\.modelContext) private var modelContext
     @State private var isFilePickerPresented = false
     @Query private var files: [File]
 
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $viewModel.columnVisibility) {
             List {
                 NavigationLink {
                     HomeView()
+                        .environmentObject(viewModel)
                 } label: {
                     Label("Library", systemImage: "book")
                 }
@@ -45,6 +51,7 @@ struct Mainview: View {
             }
         } detail: {
             HomeView()
+                .environmentObject(viewModel)
         }
     }
 
