@@ -13,6 +13,7 @@ struct HomeView: View {
     @EnvironmentObject var mainViewModel: MainViewModel
     @Query private var files: [File]
     @State private var gridColumns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 3)
+    @State private var readFile: File? = nil
 
     var sortedFiles: [File] {
         files.sorted { file1, file2 in
@@ -39,7 +40,9 @@ struct HomeView: View {
             } else {
                 LazyVGrid(columns: gridColumns, spacing: 16) {
                     ForEach(sortedFiles) { file in
-                        NavigationLink(destination: PDFReaderView(file: file).environmentObject(mainViewModel)) {
+                        Button(action: {
+                            readFile = file
+                        }) {
                             VStack {
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(Color.gray.opacity(0.2))
@@ -79,8 +82,6 @@ struct HomeView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .contextMenu {
-//                            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-
                             Button(action: {
                                 modelContext.delete(file)
                             }) {
@@ -104,6 +105,11 @@ struct HomeView: View {
         .navigationTitle("Library")
         .onAppear {
             mainViewModel.columnVisibility = .all
+        }
+        .fullScreenCover(item: $readFile) { file in
+            PDFReaderView(file: file)
+                .environmentObject(mainViewModel)
+                .edgesIgnoringSafeArea(.all)
         }
     }
 }

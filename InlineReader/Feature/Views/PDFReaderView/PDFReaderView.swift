@@ -6,6 +6,7 @@ struct PDFReaderView: View {
     @StateObject private var viewModel = PDFReaderViewModel()
     @State private var pdfText: String = ""
     @State private var selectedText: SelectedText? = nil
+    @Environment(\.dismiss) private var dismiss
 
     private let file: File
 
@@ -13,37 +14,40 @@ struct PDFReaderView: View {
         self.file = file
     }
 
-    private var padding: CGFloat {
-        mainViewModel.columnVisibility == .detailOnly ? 200 : 50
-    }
-
     var body: some View {
-        HStack {
-            SelectableTextView(text: pdfText, onTextSelected: { text in
-                print("Text selected")
-                selectedText = SelectedText(text: text)
-            })
-            .defersSystemGestures(on: .all)
-            .padding(EdgeInsets(top: 20, leading: padding, bottom: 20, trailing: padding))
+        NavigationView {
+            HStack {
+                SelectableTextView(text: pdfText, onTextSelected: { text in
+                    print("Text selected")
+                    selectedText = SelectedText(text: text)
+                })
+                .defersSystemGestures(on: .all)
+                .padding(EdgeInsets(top: 20, leading: 100, bottom: 20, trailing: 100))
+                .onAppear {
+                    loadPDFText()
+                }
+            }
+            .withLoader(loading: $viewModel.loading)
+            .sheet(item: $selectedText) { text in
+                NavigationStack {
+                    TranslationView(text: text)
+                }
+            }
             .onAppear {
-                loadPDFText()
+                file.updateLastOpened()
+            }
+            .navigationTitle(file.name)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "xmark.circle")
+                    }
+                }
             }
         }
-        .withLoader(loading: $viewModel.loading)
-        .sheet(item: $selectedText) { text in
-            NavigationStack {
-                TranslationView(text: text)
-            }
-        }
-        .onAppear {
-            file.updateLastOpened()
-            mainViewModel.columnVisibility = .detailOnly
-        }
-        .onDisappear {
-            mainViewModel.columnVisibility = .all
-        }
-        .navigationTitle(file.name)
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     private func loadPDFText() {
