@@ -47,28 +47,27 @@ struct PDFKitRepresentedView: View {
     }
 
     private func loadPDFText() {
-        let fileNameWithoutExtension = (file.name as NSString).deletingPathExtension
-        print("Attempting to load file: \(fileNameWithoutExtension).pdf")
-        if let documentURL = Bundle.main.url(forResource: fileNameWithoutExtension, withExtension: "pdf") {
-            print("Document URL: \(documentURL)")
-            if let document = PDFDocument(url: documentURL) {
-                var fullText = ""
-                for pageIndex in 0..<document.pageCount {
-                    if let page = document.page(at: pageIndex) {
-                        if let pageText = page.string {
-                            fullText += pageText
-                        }
+        guard let documentURL = file.fullURL else {
+            print("Document URL not found for file: \(file.name).pdf")
+            pdfText = "Document URL not found."
+            return
+        }
+
+        print("Document URL: \(documentURL)")
+        if let document = PDFDocument(url: documentURL) {
+            var fullText = ""
+            for pageIndex in 0..<document.pageCount {
+                if let page = document.page(at: pageIndex) {
+                    if let pageText = page.string {
+                        fullText += pageText
                     }
                 }
-                pdfText = fullText.isEmpty ? "No text found in PDF." : fullText
-                print("PDF text loaded successfully.")
-            } else {
-                print("Failed to load PDF document.")
-                pdfText = "Failed to load PDF document."
             }
+            pdfText = fullText.isEmpty ? "No text found in PDF." : fullText
+            print("PDF text loaded successfully.")
         } else {
-            print("Document URL not found for file: \(fileNameWithoutExtension).pdf")
-            pdfText = "Document URL not found."
+            print("Failed to load PDF document.")
+            pdfText = "Failed to load PDF document."
         }
     }
 }

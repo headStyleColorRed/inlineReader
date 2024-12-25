@@ -68,8 +68,10 @@ struct ContentView: View {
                     }
 
                     // If file is not in the model context, add it
-                    if !files.contains(where: { $0.url == destinationURL }) {
+                    if !files.contains(File(url: destinationURL)) {
                         let file = File(url: destinationURL)
+                        print("Imported file:")
+                        print(file)
                         modelContext.insert(file)
                     }
                 } catch {
