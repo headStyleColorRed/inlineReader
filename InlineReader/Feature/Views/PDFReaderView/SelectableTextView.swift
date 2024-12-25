@@ -17,17 +17,18 @@ struct SelectableTextView: UIViewRepresentable {
         textView.font = UIFont.systemFont(ofSize: options.fontSize)
         textView.textContainer.lineFragmentPadding = 8
         textView.textContainer.lineBreakMode = .byWordWrapping
-        textView.textAlignment = options.textAlignment.appleAlignment
+        textView.textAlignment = .right
 
-        // Set the line spacing
+        // Set the line spacing and alignment
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 10 // Adjust the line spacing as needed
+        paragraphStyle.alignment = options.textAlignment.appleAlignment
+        paragraphStyle.lineSpacing = 10
 
-        // Ensure the text color is set in the attributes
+        // Ensure the text color and alignment are set in the attributes
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: options.fontSize),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: UIColor.white // Ensure text color is set
+            .foregroundColor: UIColor.white
         ]
 
         let attributedString = NSAttributedString(string: text, attributes: attributes)
@@ -37,14 +38,15 @@ struct SelectableTextView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: CustomTextView, context: Context) {
-        // Update the attributed text with line spacing
+        // Update the attributed text with line spacing and alignment
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 10 // Ensure the line spacing is consistent
+        paragraphStyle.alignment = options.textAlignment.appleAlignment
+        paragraphStyle.lineSpacing = 10
 
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: options.fontSize),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: UIColor.white // Ensure text color is set
+            .foregroundColor: UIColor.white
         ]
 
         let attributedString = NSAttributedString(string: text, attributes: attributes)
