@@ -87,6 +87,6 @@ struct HomeView: View {
 }
 
 #Preview(traits: .landscapeLeft) {
-    ContentView()
+    Mainview()
         .modelContainer(for: File.self, inMemory: true)
 }

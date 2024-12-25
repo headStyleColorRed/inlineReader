@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-struct ContentView: View {
+struct Mainview: View {
     @Environment(\.modelContext) private var modelContext
     @State private var isFilePickerPresented = false
     @Query private var files: [File]
@@ -87,6 +87,6 @@ struct ContentView: View {
 }
 
 #Preview(traits: .landscapeLeft) {
-    ContentView()
+    Mainview()
         .modelContainer(for: File.self, inMemory: true)
 }
