@@ -39,15 +39,6 @@ struct Mainview: View {
                               allowsMultipleSelection: false) { result in
                     fileImported(result: result)
                 }
-
-                Button {
-                    // delete all files
-                    for file in files {
-                        modelContext.delete(file)
-                    }
-                } label: {
-                    Label("Clear", systemImage: "trash")
-                }
             }
         } detail: {
             HomeView()
