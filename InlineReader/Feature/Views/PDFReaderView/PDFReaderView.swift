@@ -28,6 +28,10 @@ struct PDFKitRepresentedView: View {
     @State private var pdfText: String = ""
     @State private var selectedText: SelectedText? = nil
 
+    private var padding: CGFloat {
+        viewModel.columnVisibility == .detailOnly ? 200 : 50
+    }
+
     var body: some View {
         HStack {
             SelectableTextView(text: pdfText, onTextSelected: { text in
@@ -35,7 +39,7 @@ struct PDFKitRepresentedView: View {
                 selectedText = SelectedText(text: text)
             })
             .defersSystemGestures(on: .all)
-            .padding(EdgeInsets(top: 20, leading: 200, bottom: 20, trailing: 200))
+            .padding(EdgeInsets(top: 20, leading: padding, bottom: 20, trailing: padding))
             .onAppear {
                 loadPDFText()
             }
