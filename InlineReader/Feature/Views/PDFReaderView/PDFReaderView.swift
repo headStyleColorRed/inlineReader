@@ -10,6 +10,14 @@ struct PDFReaderView: View {
     @Environment(\.dismiss) private var dismiss
 
     private let file: File
+    private var document: PDFDocument? {
+        guard let url = file.fullURL else { return nil }
+        return PDFDocument(url: url)
+    }
+    private var lastPage: Int {
+        guard let document else { return 0 }
+        return document.pageCount - 1
+    }
 
     init(file: File) {
         self.file = file
@@ -60,6 +68,35 @@ struct PDFReaderView: View {
                         Image(systemName: "gearshape")
                     }
                 }
+
+                ToolbarItemGroup(placement: .bottomBar) {
+                    Button(action: {
+                        if file.currentPage > 0 {
+                            file.currentPage -= 1
+                            loadPDFText()
+                        }
+                    }) {
+                        Image(systemName: "chevron.left")
+                    }
+                    .disabled(file.currentPage <= 0)
+
+                    Spacer()
+
+                    // Page number
+                    Text("\(file.currentPage + 1) / \(lastPage)")
+
+                    Spacer()
+
+                    Button(action: {
+                        if file.currentPage < lastPage {
+                            file.currentPage += 1
+                            loadPDFText()
+                        }
+                    }) {
+                        Image(systemName: "chevron.right")
+                    }
+                    .disabled(file.currentPage >= lastPage)
+                }
             }
         }
     }
@@ -73,16 +110,17 @@ struct PDFReaderView: View {
 
         print("Document URL: \(documentURL)")
         if let document = PDFDocument(url: documentURL) {
-            var fullText = ""
-            for pageIndex in 0..<document.pageCount {
-                if let page = document.page(at: pageIndex) {
-                    if let pageText = page.string {
-                        fullText += pageText
-                    }
+            let currentPage = file.currentPage < document.pageCount ? file.currentPage : 0
+            if let page = document.page(at: currentPage) {
+                if let pageText = page.string {
+                    pdfText = pageText.isEmpty ? "No text found on this page." : pageText
+                } else {
+                    pdfText = "No text found on this page."
                 }
+            } else {
+                pdfText = "Failed to load page."
             }
-            pdfText = fullText.isEmpty ? "No text found in PDF." : fullText
-            print("PDF text loaded successfully.")
+            print("PDF text for page \(currentPage) loaded successfully.")
         } else {
             print("Failed to load PDF document.")
             pdfText = "Failed to load PDF document."

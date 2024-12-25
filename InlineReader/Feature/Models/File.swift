@@ -15,6 +15,7 @@ final class File: CustomStringConvertible, Equatable {
     var progress: Int
     var dateAdded: Date
     var lastOpened: Date?
+    var currentPage: Int
     private var url: String
     var settings: Settings
 
@@ -23,6 +24,7 @@ final class File: CustomStringConvertible, Equatable {
         self.progress = 0
         self.dateAdded = Date()
         self.lastOpened = nil
+        self.currentPage = 0
         // The url Will only be the last path component since we are in the documents directory
         self.url = url.lastPathComponent
         // The name will be the last path component without the extension
@@ -41,7 +43,8 @@ final class File: CustomStringConvertible, Equatable {
             url: \(url),
             progress: \(progress),
             dateAdded: \(dateAdded),
-            lastOpened: \(lastOpened?.asStringWith(format: .userFacingOnlyDate) ?? "Never opened")
+            lastOpened: \(lastOpened?.asStringWith(format: .userFacingOnlyDate) ?? "Never opened"),
+            currentPage: \(currentPage)
         }
         """
     }
