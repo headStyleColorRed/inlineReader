@@ -17,6 +17,10 @@ struct PDFReaderView: View {
         guard let document else { return 0 }
         return document.pageCount - 1
     }
+    private var horizontalPadding: CGFloat {
+        // If ipad 100 if iphone 20
+        return UIDevice.current.userInterfaceIdiom == .pad ? 100 : 20
+    }
 
     init(file: File) {
         self.file = file
@@ -30,7 +34,7 @@ struct PDFReaderView: View {
                     selectedText = SelectedText(text: text)
                 })
                 .defersSystemGestures(on: .all)
-                .padding(EdgeInsets(top: 20, leading: 100, bottom: 20, trailing: 100))
+                .padding(EdgeInsets(top: 20, leading: horizontalPadding, bottom: 20, trailing: horizontalPadding))
             }
             .withLoader(loading: $viewModel.loading)
             .sheet(item: $selectedText) { text in
