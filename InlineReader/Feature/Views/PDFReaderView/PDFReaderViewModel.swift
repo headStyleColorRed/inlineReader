@@ -18,7 +18,7 @@ class PDFReaderViewModel: ObservableObject {
         }
     }
 
-    func loadPDFText(file: File) async  {
+    func loadPDFText(file: File)  {
         do {
             guard let documentURL = file.fullURL else { throw "Document URL not found for file: \(file.name).pdf" }
             guard let document = PDFDocument(url: documentURL) else { throw "Failed to load PDF document." }
@@ -27,7 +27,9 @@ class PDFReaderViewModel: ObservableObject {
             guard let pageText = page.string else { throw "No text found on this page." }
             guard !pageText.isEmpty else { throw "No text found on this page." }
             DispatchQueue.main.async {
-                self.pdfText = pageText
+                self.pdfText = pageText.replacingOccurrences(of: "\n", with: " ")
+                debugPrint(pageText)
+                print(page.attributedString)
             }
         } catch let error {
             print(error)

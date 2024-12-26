@@ -83,12 +83,13 @@ struct HomeView: View {
                         .buttonStyle(PlainButtonStyle())
                         .contextMenu {
                             Button(action: {
+                                if let url = file.fullURL {
+                                    try? FileManager.default.removeItem(at: url)
+                                }
                                 modelContext.delete(file)
+                                try? modelContext.save()
                             }) {
                                 Label("Delete", systemImage: "trash")
-                            }
-                            .onAppear {
-                                print("Context menu appeared")
                             }
 
                             Button(action: {
