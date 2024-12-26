@@ -4,7 +4,6 @@ import PDFKit
 struct PDFReaderView: View {
     @EnvironmentObject var mainViewModel: MainViewModel
     @StateObject private var viewModel = PDFReaderViewModel()
-    @State private var pdfText: String = ""
     @State private var selectedText: SelectedText? = nil
     @State private var showSettings = false
     @Environment(\.dismiss) private var dismiss
@@ -26,15 +25,12 @@ struct PDFReaderView: View {
     var body: some View {
         NavigationView {
             HStack {
-                SelectableTextView(text: pdfText, options: file.settings, onTextSelected: { text in
+                SelectableTextView(text: viewModel.pdfText, options: file.settings, onTextSelected: { text in
                     print("Text selected")
                     selectedText = SelectedText(text: text)
                 })
                 .defersSystemGestures(on: .all)
                 .padding(EdgeInsets(top: 20, leading: 100, bottom: 20, trailing: 100))
-                .onAppear {
-                    loadPDFText()
-                }
             }
             .withLoader(loading: $viewModel.loading)
             .sheet(item: $selectedText) { text in
@@ -71,10 +67,8 @@ struct PDFReaderView: View {
 
                 ToolbarItemGroup(placement: .bottomBar) {
                     Button(action: {
-                        if file.currentPage > 0 {
-                            file.currentPage -= 1
-                            loadPDFText()
-                        }
+                        guard file.currentPage > 0 else { return }
+                        viewModel.changePage(by: -1, file: file)
                     }) {
                         Image(systemName: "chevron.left")
                     }
@@ -88,10 +82,8 @@ struct PDFReaderView: View {
                     Spacer()
 
                     Button(action: {
-                        if file.currentPage < lastPage {
-                            file.currentPage += 1
-                            loadPDFText()
-                        }
+                        guard file.currentPage < lastPage else { return }
+                        viewModel.changePage(by: +1, file: file)
                     }) {
                         Image(systemName: "chevron.right")
                     }
@@ -99,31 +91,11 @@ struct PDFReaderView: View {
                 }
             }
         }
-    }
 
-    private func loadPDFText() {
-        guard let documentURL = file.fullURL else {
-            print("Document URL not found for file: \(file.name).pdf")
-            pdfText = "Document URL not found."
-            return
-        }
-
-        print("Document URL: \(documentURL)")
-        if let document = PDFDocument(url: documentURL) {
-            let currentPage = file.currentPage < document.pageCount ? file.currentPage : 0
-            if let page = document.page(at: currentPage) {
-                if let pageText = page.string {
-                    pdfText = pageText.isEmpty ? "No text found on this page." : pageText
-                } else {
-                    pdfText = "No text found on this page."
-                }
-            } else {
-                pdfText = "Failed to load page."
+        .onAppear {
+            Task {
+                await viewModel.loadPDFText(file: file)
             }
-            print("PDF text for page \(currentPage) loaded successfully.")
-        } else {
-            print("Failed to load PDF document.")
-            pdfText = "Failed to load PDF document."
         }
     }
 }
