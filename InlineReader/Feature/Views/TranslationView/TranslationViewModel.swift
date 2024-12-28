@@ -26,7 +26,7 @@ class TranslationViewModel: ObservableObject {
     }
 
     init(text: SelectedText, settings: Settings) {
-        self.textToTranslate = text.text
+        self.textToTranslate = text.lastSixtyWords
         self.settings = settings
         self.openAIService = OpenAIService(apiKey: Configuration.openAIApiKey)
     }

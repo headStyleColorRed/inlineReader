@@ -26,10 +26,13 @@ struct TranslationView: View {
                     .padding(.vertical)
                     .frame(maxWidth: .infinity, alignment: .center)
 
+
                 Text(viewModel.textToTranslate)
                     .font(.body)
                     .frame(maxWidth: .infinity, alignment: alignment)
+                    .multilineTextAlignment(alignment == .leading ? .leading : .trailing)
                     .padding()
+
 
                 Divider()
 
