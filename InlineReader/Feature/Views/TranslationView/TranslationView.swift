@@ -31,56 +31,79 @@ struct TranslationView: View {
                         .font(.body)
                         .frame(maxWidth: .infinity, alignment: alignment)
                         .padding(.horizontal)
+                        .padding()
+
+                    Divider()
 
                     if viewModel.isLoading {
                         loadingView()
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     } else {
                         Text(viewModel.translatedText)
                             .font(.body)
                             .foregroundColor(.gray)
-                            .frame(maxWidth: .infinity, alignment: alignment)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
+                            .padding(.top, 20)
                     }
                 }
 
+
+                Text(". . .")
+                    .font(.body)
+                    .foregroundColor(.gray)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 10)
+                    .isHidden(viewModel.isLoading || !viewModel.hasTranslated, remove: true)
+
+
                 if viewModel.isFurtherTranslating {
                     loadingView()
+                        .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     Text(viewModel.furtherTranslatedText)
                         .font(.body)
                         .foregroundColor(.gray)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top, 20)
+                        .padding(.top, 10)
                         .padding(.horizontal)
                 }
 
-                Button("Translate") {
-                    Task {
-                        await viewModel.startTranslation()
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-                .padding(.top, 20)
-                .isHidden(viewModel.hasTranslated, remove: true)
-
-                Button("Further Translate") {
-                    Task {
-                        await viewModel.furtherTranslate()
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-                .padding(.top, 20)
-                .isHidden(viewModel.hasFurtherTranslated, remove: true)
                 Spacer()
             }
             .padding()
+            .task {
+                await viewModel.startTranslation()
+            }
         }
+        .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                Button(action: {
+                    Task {
+                        await viewModel.furtherTranslate()
+                    }
+                }) {
+                    Text("Show examples...")
+                        .font(.body)
+                        .padding(10)
+                        .foregroundColor(.gray)
+                        .cornerRadius(8)
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .isHidden(hideFurtherTranslationButton, remove: true)
+            }
+        }
+    }
+
+    var hideFurtherTranslationButton: Bool {
+        viewModel.hasFurtherTranslated ||
+        viewModel.isLoading ||
+        viewModel.isFurtherTranslating
     }
 
     func loadingView() -> some View {
         ProgressView()
-            .frame(maxWidth: .infinity, alignment: .center)
-            .padding()
+            .padding(.horizontal)
     }
 }
 

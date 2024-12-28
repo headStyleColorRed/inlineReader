@@ -12,7 +12,7 @@ class TranslationViewModel: ObservableObject {
     @Published var textToTranslate: String = ""
     @Published var translatedText: String = ""
     @Published var furtherTranslatedText: String = ""
-    @Published var isLoading: Bool = false
+    @Published var isLoading: Bool = true
     @Published var isFurtherTranslating: Bool = false
 
     @Published var hasTranslated: Bool = false
@@ -29,7 +29,6 @@ class TranslationViewModel: ObservableObject {
 
     @MainActor
     func startTranslation() async {
-        isLoading = true
         do {
             translatedText = try await openAIService.translate(textToTranslate, language: settings.languageOfTranslation)
             hasTranslated = true
