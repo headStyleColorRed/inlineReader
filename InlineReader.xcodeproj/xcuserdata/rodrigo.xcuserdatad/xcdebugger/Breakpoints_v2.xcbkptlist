@@ -3,4 +3,80 @@
    uuid = "73C57D48-E6B9-424A-B310-CDFE4396CC38"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B6CD4931-D6F8-4E93-84EC-F7FF1DE17805"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "InlineReader/Feature/Views/TranslationView/TranslationViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "wordCount"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "B6CD4931-D6F8-4E93-84EC-F7FF1DE17805 - 2bb15f7946ec12ab"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "InlineReader.TranslationViewModel.init(text: InlineReader.SelectedText, settings: InlineReader.Settings) -&gt; InlineReader.TranslationViewModel"
+                  moduleName = "InlineReader.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rodrigo/Documents/trials/iOS/InlineReader/InlineReader/Feature/Views/TranslationView/TranslationViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+               <Location
+                  uuid = "B6CD4931-D6F8-4E93-84EC-F7FF1DE17805 - 997c8d21968e44c6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "InlineReader.TranslationViewModel.wordCount.getter : Swift.Int"
+                  moduleName = "InlineReader.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rodrigo/Documents/trials/iOS/InlineReader/InlineReader/Feature/Views/TranslationView/TranslationViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+               <Location
+                  uuid = "B6CD4931-D6F8-4E93-84EC-F7FF1DE17805 - 160a8487f30c4697"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Character) -&gt; Swift.Bool in InlineReader.TranslationViewModel.wordCount.getter : Swift.Int"
+                  moduleName = "InlineReader.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rodrigo/Documents/trials/iOS/InlineReader/InlineReader/Feature/Views/TranslationView/TranslationViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+               <Location
+                  uuid = "B6CD4931-D6F8-4E93-84EC-F7FF1DE17805 - bed8c13dcec24aca"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Substring) -&gt; Swift.Bool in InlineReader.TranslationViewModel.wordCount.getter : Swift.Int"
+                  moduleName = "InlineReader.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rodrigo/Documents/trials/iOS/InlineReader/InlineReader/Feature/Views/TranslationView/TranslationViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

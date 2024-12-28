@@ -98,7 +98,8 @@ struct TranslationView: View {
     var hideFurtherTranslationButton: Bool {
         viewModel.hasFurtherTranslated ||
         viewModel.isLoading ||
-        viewModel.isFurtherTranslating
+        viewModel.isFurtherTranslating ||
+        viewModel.wordCount > 10
     }
 
     func loadingView() -> some View {
