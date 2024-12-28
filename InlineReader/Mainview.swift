@@ -35,7 +35,7 @@ struct Mainview: View {
                     Label("Import", systemImage: "folder")
                 }
                 .fileImporter(isPresented: $isFilePickerPresented,
-                              allowedContentTypes: [UTType.pdf],
+                              allowedContentTypes: [UTType.pdf, UTType.plainText],
                               allowsMultipleSelection: false) { result in
                     fileImported(result: result)
                 }
