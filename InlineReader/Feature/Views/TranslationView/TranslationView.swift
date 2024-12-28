@@ -20,27 +20,27 @@ struct TranslationView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: alignment == .leading ? .leading : .trailing) {
+            VStack(alignment: alignment == .leading ? .leading : .trailing, spacing: 16) {
                 Text("Translated Text")
-                    .font(.headline)
+                    .font(.title2)
                     .padding(.vertical)
                     .multilineTextAlignment(.center)
 
-                VStack(alignment: .trailing) {
-
+                VStack(alignment: .trailing, spacing: 8) {
                     Text(viewModel.textToTranslate)
-                        .font(.subheadline)
+                        .font(.body)
                         .multilineTextAlignment(.trailing)
                         .frame(maxWidth: .infinity, alignment: alignment)
-
+                        .padding(.horizontal)
 
                     if viewModel.isLoading {
                         loadingView()
                     } else {
                         Text(viewModel.translatedText)
-                            .font(.subheadline)
+                            .font(.body)
                             .foregroundColor(.gray)
                             .frame(maxWidth: .infinity, alignment: alignment)
+                            .padding(.horizontal)
                     }
                 }
 
@@ -48,11 +48,11 @@ struct TranslationView: View {
                     loadingView()
                 } else {
                     Text(viewModel.furtherTranslatedText)
-                        .font(.subheadline)
+                        .font(.body)
                         .foregroundColor(.gray)
                         .frame(maxWidth: .infinity, alignment: alignment)
                         .padding(.top, 20)
-                        .frame(maxWidth: .infinity, alignment: alignment)
+                        .padding(.horizontal)
                 }
 
                 Button("Translate") {
@@ -60,13 +60,17 @@ struct TranslationView: View {
                         await viewModel.startTranslation()
                     }
                 }
+                .buttonStyle(.borderedProminent)
                 .padding(.top, 20)
+
                 Button("Further Translate") {
                     Task {
                         await viewModel.furtherTranslate()
                     }
                 }
+                .buttonStyle(.borderedProminent)
                 .padding(.top, 20)
+
                 Spacer()
             }
             .padding()
