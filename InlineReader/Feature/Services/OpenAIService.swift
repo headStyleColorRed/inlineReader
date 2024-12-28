@@ -8,20 +8,6 @@ class OpenAIService {
         self.apiKey = apiKey
     }
 
-    struct ChatResponse: Codable {
-        let id: String
-        let object: String
-        struct Choice: Codable {
-            struct Message: Codable {
-                let content: String
-                let refusal: String?
-            }
-            let message: Message
-            let finish_reason: String
-        }
-        let choices: [Choice]
-    }
-
     func translate(_ text: String, language: Language) async throws -> String {
         let prompt = """
         Translate the following text to \(language.rawValue):\n\n\(text)
