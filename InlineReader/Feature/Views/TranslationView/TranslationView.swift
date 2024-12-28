@@ -20,34 +20,30 @@ struct TranslationView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: alignment == .leading ? .leading : .trailing, spacing: 16) {
+            VStack(spacing: 16) {
                 Text("Translated Text")
                     .font(.title2)
                     .padding(.vertical)
                     .frame(maxWidth: .infinity, alignment: .center)
 
-                VStack(alignment: .trailing, spacing: 8) {
-                    Text(viewModel.textToTranslate)
-                        .font(.body)
-                        .frame(maxWidth: .infinity, alignment: alignment)
-                        .padding(.horizontal)
-                        .padding()
+                Text(viewModel.textToTranslate)
+                    .font(.body)
+                    .frame(maxWidth: .infinity, alignment: alignment)
+                    .padding()
 
-                    Divider()
+                Divider()
 
-                    if viewModel.isLoading {
-                        loadingView()
+                if viewModel.isLoading {
+                    loadingView()
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    } else {
-                        Text(viewModel.translatedText)
-                            .font(.body)
-                            .foregroundColor(.gray)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal)
-                            .padding(.top, 20)
-                    }
+                } else {
+                    Text(viewModel.translatedText)
+                        .font(.body)
+                        .foregroundColor(.gray)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
+                        .padding(.top, 20)
                 }
-
 
                 Text(". . .")
                     .font(.body)
