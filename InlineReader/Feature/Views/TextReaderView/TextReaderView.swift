@@ -25,7 +25,6 @@ struct TextReaderView: View {
                                   bottom: 20,
                                   trailing: UIDevice.current.userInterfaceIdiom == .pad ? 100 : 20))
             }
-            .withLoader(loading: $viewModel.loading)
             .sheet(item: $selectedText) { text in
                 NavigationStack {
                     TranslationView(text: text)
