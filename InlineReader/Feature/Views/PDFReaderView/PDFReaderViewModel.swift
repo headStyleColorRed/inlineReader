@@ -22,13 +22,20 @@ class PDFReaderViewModel: ObservableObject {
         do {
             guard let documentURL = file.fullURL else { throw "Document URL not found for file: \(file.name).pdf" }
             guard let document = PDFDocument(url: documentURL) else { throw "Failed to load PDF document." }
-            let currentPage = file.currentPage < document.pageCount ? file.currentPage : 0
-            guard let page = document.page(at: currentPage) else { throw "Failed to load page." }
-            guard let pageText = page.string else { throw "No text found on this page." }
-            guard !pageText.isEmpty else { throw "No text found on this page." }
+
+            // Convert entire PDF to text
+            var fullText = ""
+            for pageIndex in 0..<document.pageCount {
+                guard let page = document.page(at: pageIndex) else { continue }
+                if let pageText = page.string {
+                    fullText += pageText + "\n\n"
+                }
+            }
+
+            guard !fullText.isEmpty else { throw "No text found in this document." }
+
             DispatchQueue.main.async {
-                print(pageText)
-                self.pdfText = pageText
+                self.pdfText = fullText
             }
         } catch let error {
             print(error)

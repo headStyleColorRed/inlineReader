@@ -9,16 +9,7 @@ struct PDFReaderView: View {
     @Environment(\.dismiss) private var dismiss
 
     private let file: File
-    private var document: PDFDocument? {
-        guard let url = file.fullURL else { return nil }
-        return PDFDocument(url: url)
-    }
-    private var lastPage: Int {
-        guard let document else { return 0 }
-        return document.pageCount - 1
-    }
     private var horizontalPadding: CGFloat {
-        // If ipad 100 if iphone 20
         return UIDevice.current.userInterfaceIdiom == .pad ? 100 : 20
     }
 
@@ -30,7 +21,6 @@ struct PDFReaderView: View {
         NavigationView {
             HStack {
                 SelectableTextView(text: viewModel.pdfText, options: file.settings, onTextSelected: { text in
-                    print("Text selected")
                     selectedText = SelectedText(text: text)
                 })
                 .defersSystemGestures(on: .all)
@@ -68,34 +58,8 @@ struct PDFReaderView: View {
                         Image(systemName: "gearshape")
                     }
                 }
-
-                ToolbarItemGroup(placement: .bottomBar) {
-                    Button(action: {
-                        guard file.currentPage > 0 else { return }
-                        viewModel.changePage(by: -1, file: file)
-                    }) {
-                        Image(systemName: "chevron.left")
-                    }
-                    .disabled(file.currentPage <= 0)
-
-                    Spacer()
-
-                    // Page number
-                    Text("\(file.currentPage + 1) / \(lastPage)")
-
-                    Spacer()
-
-                    Button(action: {
-                        guard file.currentPage < lastPage else { return }
-                        viewModel.changePage(by: +1, file: file)
-                    }) {
-                        Image(systemName: "chevron.right")
-                    }
-                    .disabled(file.currentPage >= lastPage)
-                }
             }
         }
-
         .onAppear {
             Task {
                 await viewModel.loadPDFText(file: file)
