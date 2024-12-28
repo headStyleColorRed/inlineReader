@@ -31,7 +31,7 @@ class TranslationViewModel: ObservableObject {
     func startTranslation() async {
         isLoading = true
         do {
-            translatedText = try await openAIService.translate(textToTranslate)
+            translatedText = try await openAIService.translate(textToTranslate, language: settings.languageOfTranslation)
             hasTranslated = true
         } catch {
             translatedText = "Translation failed: \(error.localizedDescription)"
@@ -44,7 +44,7 @@ class TranslationViewModel: ObservableObject {
         isFurtherTranslating = true
         do {
             // Translate the text to English
-            let translatedText = try await openAIService.furtherTranslate(textToTranslate)
+            let translatedText = try await openAIService.furtherTranslate(textToTranslate, language: settings.languageOfTranslation)
 
             // Add an extra newline where there's a newline followed by a number
             let formattedText = translatedText.replacingOccurrences(of: "\n(?=\\d)", with: "\n\n", options: .regularExpression)

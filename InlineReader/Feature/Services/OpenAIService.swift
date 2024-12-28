@@ -22,9 +22,9 @@ class OpenAIService {
         let choices: [Choice]
     }
 
-    func translate(_ text: String) async throws -> String {
+    func translate(_ text: String, language: Language) async throws -> String {
         let prompt = """
-        Translate the following text to English::::
+        Translate the following text to \(language.rawValue)::::
         \(text)
         """
         print("Prompt: \(prompt)")
@@ -53,13 +53,29 @@ class OpenAIService {
         return response.choices.first?.message.content ?? "Translation failed"
     }
 
-    func furtherTranslate(_ text: String) async throws -> String {
+    func furtherTranslate(_ text: String, language: Language) async throws -> String {
         let prompt = """
-        Analyze the following text in detail and provide the following information:
+        Analyze the following \(language.rawValue) text in detail and provide the following information:
 
         - A phonetic pronunciation of the text.
         - A breakdown of each word with its individual meaning.
         - Three example sentences using the words in the original text.
+
+        For example, if the text is spanish "¿Hola, cómo estás?", the output should be:
+
+        \"
+        Phonetic pronunciation: "olah, 'komo 'estas"
+
+        Breakdown of each word:
+        - Hola - Hello (olah)
+        - cómo - how (komo)
+        - estás - are you (estas)
+
+        Example sentences:
+        1. Hola Pedro, todo bien hoy?
+        2. ¿Cómo has ido hoy a clase?
+        3. Estás siempre ocupado por las mañanas
+        \"
 
         Text to analyze: '\(text)'
         """

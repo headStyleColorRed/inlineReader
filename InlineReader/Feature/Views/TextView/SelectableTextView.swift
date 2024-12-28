@@ -12,12 +12,14 @@ struct SelectableTextView: UIViewRepresentable {
         textView.isSelectable = true
         textView.isUserInteractionEnabled = true
         textView.isScrollEnabled = true
-        textView.textColor = UIColor.white
         textView.onTextSelected = onTextSelected
         textView.font = UIFont.systemFont(ofSize: options.fontSize)
         textView.textContainer.lineFragmentPadding = 8
         textView.textContainer.lineBreakMode = .byWordWrapping
         textView.textAlignment = .right
+
+        // Determine the text color based on the current interface style
+        let textColor: UIColor = context.environment.colorScheme == .dark ? .white : .black
 
         // Set the line spacing and alignment
         let paragraphStyle = NSMutableParagraphStyle()
@@ -28,7 +30,7 @@ struct SelectableTextView: UIViewRepresentable {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: options.fontSize),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: UIColor.white
+            .foregroundColor: textColor
         ]
 
         let attributedString = NSAttributedString(string: text, attributes: attributes)
@@ -38,6 +40,9 @@ struct SelectableTextView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: CustomTextView, context: Context) {
+        // Determine the text color based on the current interface style
+        let textColor: UIColor = context.environment.colorScheme == .dark ? .white : .black
+
         // Update the attributed text with line spacing and alignment
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = options.textAlignment.appleAlignment
@@ -46,7 +51,7 @@ struct SelectableTextView: UIViewRepresentable {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: options.fontSize),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: UIColor.white
+            .foregroundColor: textColor
         ]
 
         let attributedString = NSAttributedString(string: text, attributes: attributes)

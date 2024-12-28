@@ -24,7 +24,7 @@ struct TranslationView: View {
                 Text("Translated Text")
                     .font(.title2)
                     .padding(.vertical)
-                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, alignment: .center)
 
                 VStack(alignment: .trailing, spacing: 8) {
                     Text(viewModel.textToTranslate)
@@ -49,7 +49,7 @@ struct TranslationView: View {
                     Text(viewModel.furtherTranslatedText)
                         .font(.body)
                         .foregroundColor(.gray)
-                        .frame(maxWidth: .infinity, alignment: alignment)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.top, 20)
                         .padding(.horizontal)
                 }
@@ -94,7 +94,7 @@ struct TempView: View {
         .sheet(isPresented: $isPresented) {
             TranslationView(
                 text: SelectedText(text: "שלום לכולם"),
-                settings: Settings(languageOfTranslation: .amharic, fontSize: 17, textAlignment: .left)
+                settings: Settings(languageOfTranslation: .amharic, fontSize: 17, textAlignment: .right)
             )
         }
     }
