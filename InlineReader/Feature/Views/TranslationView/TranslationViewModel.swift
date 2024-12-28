@@ -15,6 +15,9 @@ class TranslationViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var isFurtherTranslating: Bool = false
 
+    @Published var hasTranslated: Bool = false
+    @Published var hasFurtherTranslated: Bool = false
+
     private let openAIService: OpenAIService
     let settings: Settings
 
@@ -29,6 +32,7 @@ class TranslationViewModel: ObservableObject {
         isLoading = true
         do {
             translatedText = try await openAIService.translate(textToTranslate)
+            hasTranslated = true
         } catch {
             translatedText = "Translation failed: \(error.localizedDescription)"
         }
@@ -47,6 +51,7 @@ class TranslationViewModel: ObservableObject {
 
             // Set the text to translate to the translated text
             furtherTranslatedText = formattedText
+            hasFurtherTranslated = true
         } catch {
             furtherTranslatedText = "Further translation failed: \(error.localizedDescription)"
         }

@@ -88,10 +88,9 @@ class OpenAIService {
         let prompt = """
         Analyze the following text in detail and provide the following information:
 
-        1. The translation of the text into English.
-        2. A phonetic pronunciation of the text.
-        3. A breakdown of each word with its individual meaning.
-        4. Three example sentences using the words in the original text.
+        - A phonetic pronunciation of the text.
+        - A breakdown of each word with its individual meaning.
+        - Three example sentences using the words in the original text.
 
         Text to analyze: '\(text)'
         """

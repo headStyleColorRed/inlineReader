@@ -29,7 +29,6 @@ struct TranslationView: View {
                 VStack(alignment: .trailing, spacing: 8) {
                     Text(viewModel.textToTranslate)
                         .font(.body)
-                        .multilineTextAlignment(.trailing)
                         .frame(maxWidth: .infinity, alignment: alignment)
                         .padding(.horizontal)
 
@@ -62,6 +61,7 @@ struct TranslationView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .padding(.top, 20)
+                .isHidden(viewModel.hasTranslated, remove: true)
 
                 Button("Further Translate") {
                     Task {
@@ -70,7 +70,7 @@ struct TranslationView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .padding(.top, 20)
-
+                .isHidden(viewModel.hasFurtherTranslated, remove: true)
                 Spacer()
             }
             .padding()
