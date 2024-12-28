@@ -51,6 +51,8 @@ struct TranslationView: View {
                         .font(.subheadline)
                         .foregroundColor(.gray)
                         .frame(maxWidth: .infinity, alignment: alignment)
+                        .padding(.top, 20)
+                        .frame(maxWidth: .infinity, alignment: alignment)
                 }
 
                 Button("Translate") {

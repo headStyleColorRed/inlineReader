@@ -3,4 +3,52 @@
    uuid = "73C57D48-E6B9-424A-B310-CDFE4396CC38"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "20A5AF93-8E8F-45D1-9BA5-D5EA5E77C560"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "InlineReader/Feature/Views/TranslationView/TranslationViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "furtherTranslate()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "20A5AF93-8E8F-45D1-9BA5-D5EA5E77C560 - 58ce5727fbe92c7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for InlineReader.TranslationViewModel.furtherTranslate() async -&gt; ()"
+                  moduleName = "InlineReader.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rodrigo/Documents/trials/iOS/InlineReader/InlineReader/Feature/Views/TranslationView/TranslationViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "45"
+                  endingLineNumber = "45">
+               </Location>
+               <Location
+                  uuid = "20A5AF93-8E8F-45D1-9BA5-D5EA5E77C560 - 58ce5727fbe92e6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for InlineReader.TranslationViewModel.furtherTranslate() async -&gt; ()"
+                  moduleName = "InlineReader.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rodrigo/Documents/trials/iOS/InlineReader/InlineReader/Feature/Views/TranslationView/TranslationViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "46"
+                  endingLineNumber = "46">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

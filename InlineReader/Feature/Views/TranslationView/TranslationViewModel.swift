@@ -40,11 +40,13 @@ class TranslationViewModel: ObservableObject {
         isFurtherTranslating = true
         do {
             // Translate the text to English
-            let translatedText = try await openAIService.translate(textToTranslate)
-            // The newlines aren't enough, so let's add an extra newline per newline in the original text
-            let extraNewlines = textToTranslate.replacingOccurrences(of: "\n", with: "\n\n")
+            let translatedText = try await openAIService.furtherTranslate(textToTranslate)
+
+            // Add an extra newline where there's a newline followed by a number
+            let formattedText = translatedText.replacingOccurrences(of: "\n(?=\\d)", with: "\n\n", options: .regularExpression)
+
             // Set the text to translate to the translated text
-            textToTranslate = translatedText
+            furtherTranslatedText = formattedText
         } catch {
             furtherTranslatedText = "Further translation failed: \(error.localizedDescription)"
         }
