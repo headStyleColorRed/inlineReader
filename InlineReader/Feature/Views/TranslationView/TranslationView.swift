@@ -23,26 +23,45 @@ struct TranslationView: View {
             VStack(alignment: alignment == .leading ? .leading : .trailing) {
                 Text("Translated Text")
                     .font(.headline)
-                    .padding()
+                    .padding(.vertical)
                     .multilineTextAlignment(.center)
 
                 VStack(alignment: .trailing) {
-                    HStack {
-                        Text(viewModel.textToTranslate)
+
+                    Text(viewModel.textToTranslate)
+                        .font(.subheadline)
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxWidth: .infinity, alignment: alignment)
+
+
+                    if viewModel.isLoading {
+                        loadingView()
+                    } else {
+                        Text(viewModel.translatedText)
                             .font(.subheadline)
-                            .multilineTextAlignment(.trailing)
+                            .foregroundColor(.gray)
                             .frame(maxWidth: .infinity, alignment: alignment)
                     }
+                }
 
-                    Text("viewModel.translatedText")
+                if viewModel.isFurtherTranslating {
+                    loadingView()
+                } else {
+                    Text(viewModel.furtherTranslatedText)
                         .font(.subheadline)
                         .foregroundColor(.gray)
                         .frame(maxWidth: .infinity, alignment: alignment)
                 }
 
-                Button("Further Translate") {
+                Button("Translate") {
                     Task {
                         await viewModel.startTranslation()
+                    }
+                }
+                .padding(.top, 20)
+                Button("Further Translate") {
+                    Task {
+                        await viewModel.furtherTranslate()
                     }
                 }
                 .padding(.top, 20)
