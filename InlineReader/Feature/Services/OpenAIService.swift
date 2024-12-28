@@ -24,8 +24,7 @@ class OpenAIService {
 
     func translate(_ text: String, language: Language) async throws -> String {
         let prompt = """
-        Translate the following text to \(language.rawValue)::::
-        \(text)
+        Translate the following text to \(language.rawValue):\n\n\(text)
         """
         print("Prompt: \(prompt)")
 
@@ -55,7 +54,7 @@ class OpenAIService {
 
     func furtherTranslate(_ text: String, language: Language) async throws -> String {
         let prompt = """
-        Analyze the following \(language.rawValue) text in detail and provide the following information:
+        Analyze the following text in detail and provide the following information:
 
         - A phonetic pronunciation of the text.
         - A breakdown of each word with its individual meaning.
