@@ -27,7 +27,7 @@ struct TextReaderView: View {
             }
             .sheet(item: $selectedText) { text in
                 NavigationStack {
-                    TranslationView(text: text)
+                    TranslationView(text: text, settings: file.settings)
                 }
             }
             .sheet(isPresented: $showSettings) {

@@ -29,7 +29,7 @@ struct PDFReaderView: View {
             .withLoader(loading: $viewModel.loading)
             .sheet(item: $selectedText) { text in
                 NavigationStack {
-                    TranslationView(text: text)
+                    TranslationView(text: text, settings: file.settings)
                 }
             }
             .sheet(isPresented: $showSettings) {

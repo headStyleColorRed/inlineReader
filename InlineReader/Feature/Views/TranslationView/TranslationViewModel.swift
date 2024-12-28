@@ -12,10 +12,13 @@ class TranslationViewModel: ObservableObject {
     @Published var translatedText: String = ""
     @Published var textToTranslate: String = ""
     @Published var isLoading: Bool = false
-    private let openAIService: OpenAIService
 
-    init(text: SelectedText) {
+    private let openAIService: OpenAIService
+    let settings: Settings
+
+    init(text: SelectedText, settings: Settings) {
         self.textToTranslate = text.text
+        self.settings = settings
         self.openAIService = OpenAIService(apiKey: Configuration.openAIApiKey)
     }
 

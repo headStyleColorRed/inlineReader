@@ -10,44 +10,73 @@ import SwiftUI
 struct TranslationView: View {
     @StateObject var viewModel: TranslationViewModel
 
-    init(text: SelectedText) {
-        _viewModel = StateObject(wrappedValue: TranslationViewModel(text: text))
+    init(text: SelectedText, settings: Settings) {
+        _viewModel = StateObject(wrappedValue: TranslationViewModel(text: text, settings: settings))
+    }
+
+    var alignment: Alignment {
+        viewModel.settings.textAlignment == .left ? .leading : .trailing
     }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
+            VStack(alignment: alignment == .leading ? .leading : .trailing) {
                 Text("Translated Text")
                     .font(.headline)
                     .padding()
-                    .fullWidthExpanded()
+                    .multilineTextAlignment(.center)
 
-                if viewModel.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding()
-                } else {
-                    VStack {
+                VStack(alignment: .trailing) {
+                    HStack {
                         Text(viewModel.textToTranslate)
                             .font(.subheadline)
-                        Text(viewModel.translatedText)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.trailing)
+                            .frame(maxWidth: .infinity, alignment: alignment)
                     }
+
+                    Text("viewModel.translatedText")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .frame(maxWidth: .infinity, alignment: alignment)
                 }
 
-                Button("Translate") {
+                Button("Further Translate") {
                     Task {
                         await viewModel.startTranslation()
                     }
                 }
+                .padding(.top, 20)
                 Spacer()
             }
             .padding()
         }
     }
+
+    func loadingView() -> some View {
+        ProgressView()
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding()
+    }
+}
+
+struct TempView: View {
+    @State var isPresented = true
+
+    var body: some View {
+        Button("Translate usted") {
+            isPresented = true
+        }
+        .sheet(isPresented: $isPresented) {
+            TranslationView(
+                text: SelectedText(text: "שלום לכולם"),
+                settings: Settings(languageOfTranslation: .amharic, fontSize: 17, textAlignment: .left)
+            )
+        }
+    }
 }
 
 #Preview {
-    TranslationView(text: SelectedText(text: "Hola rodrigo"))
+    VStack {
+        TempView()
+    }
 }
