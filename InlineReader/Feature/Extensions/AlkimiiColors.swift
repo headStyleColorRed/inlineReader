@@ -430,6 +430,15 @@ public extension UIColor {
         )
     }
 
+    func hexString() -> String {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+        return String(format: "#%02X%02X%02X", Int(r * 255), Int(g * 255), Int(b * 255))
+    }
+
     func lighter(by amount: CGFloat = 0.2) -> Self { mix(with: .white, amount: amount) }
     func darker(by amount: CGFloat = 0.2) -> Self { mix(with: .black, amount: amount) }
 }

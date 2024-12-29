@@ -2,9 +2,22 @@ import SwiftUI
 
 
 struct SelectableTextView: UIViewRepresentable {
-    let text: String
+    let text: NSAttributedString
     let options: Settings
     var onTextSelected: ((String) -> Void)?
+
+    init(text: NSAttributedString, options: Settings, onTextSelected: ((String) -> Void)? = nil) {
+        self.text = text
+        self.options = options
+        self.onTextSelected = onTextSelected
+    }
+
+    // Remove
+    init(text: String, options: Settings, onTextSelected: ((String) -> Void)? = nil) {
+        self.text = NSAttributedString(string: text)
+        self.options = options
+        self.onTextSelected = onTextSelected
+    }
 
     func makeUIView(context: Context) -> CustomTextView {
         let textView = CustomTextView(frame: .zero)
@@ -33,7 +46,8 @@ struct SelectableTextView: UIViewRepresentable {
             .foregroundColor: textColor
         ]
 
-        let attributedString = NSAttributedString(string: text, attributes: attributes)
+        // Apply attributes to the text
+        let attributedString = NSAttributedString(string: text.string, attributes: attributes)
         textView.attributedText = attributedString
 
         return textView
@@ -54,7 +68,7 @@ struct SelectableTextView: UIViewRepresentable {
             .foregroundColor: textColor
         ]
 
-        let attributedString = NSAttributedString(string: text, attributes: attributes)
+        let attributedString = NSAttributedString(string: text.string, attributes: attributes)
         uiView.attributedText = attributedString
         uiView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
     }

@@ -18,12 +18,12 @@ final class File: CustomStringConvertible, Equatable {
     var currentPage: Int
     private var url: String
     var settings: Settings
+//    var attributedText: AttributedText
 
     init(url: URL) {
         self.id = UUID()
         self.progress = 0
         self.dateAdded = Date()
-        self.lastOpened = nil
         self.currentPage = 0
         // The url Will only be the last path component since we are in the documents directory
         self.url = url.lastPathComponent

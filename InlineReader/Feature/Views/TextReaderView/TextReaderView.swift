@@ -1,22 +1,19 @@
 import SwiftUI
 
 struct TextReaderView: View {
-    @EnvironmentObject var mainViewModel: MainViewModel
-    @StateObject private var viewModel = TextReaderViewModel()
+    @StateObject private var viewModel: TextReaderViewModel
     @State private var selectedText: SelectedText? = nil
     @State private var showSettings = false
     @Environment(\.dismiss) private var dismiss
 
-    private let file: File
-
     init(file: File) {
-        self.file = file
+        _viewModel = StateObject(wrappedValue: TextReaderViewModel(file: file))
     }
 
     var body: some View {
         NavigationView {
             HStack {
-                SelectableTextView(text: viewModel.text, options: file.settings, onTextSelected: { text in
+                SelectableTextView(text: viewModel.text, options: viewModel.file.settings, onTextSelected: { text in
                     selectedText = SelectedText(text: text)
                 })
                 .defersSystemGestures(on: .all)
@@ -27,18 +24,18 @@ struct TextReaderView: View {
             }
             .sheet(item: $selectedText) { text in
                 NavigationStack {
-                    TranslationView(text: text, settings: file.settings)
+                    TranslationView(text: text, settings: viewModel.file.settings)
                 }
             }
             .sheet(isPresented: $showSettings) {
                 NavigationStack {
-                    PDFReaderSettingsView(file: file)
+                    PDFReaderSettingsView(file: viewModel.file)
                 }
             }
             .onAppear {
-                file.updateLastOpened()
+                viewModel.file.updateLastOpened()
             }
-            .navigationTitle(file.name)
+            .navigationTitle(viewModel.file.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -60,7 +57,7 @@ struct TextReaderView: View {
         }
         .onAppear {
             Task {
-                await viewModel.loadText(file: file)
+                await viewModel.loadText(file: viewModel.file)
             }
         }
     }
