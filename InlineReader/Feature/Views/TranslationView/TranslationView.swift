@@ -98,7 +98,7 @@ struct TranslationView: View {
         viewModel.hasFurtherTranslated ||
         viewModel.isLoading ||
         viewModel.isFurtherTranslating ||
-        viewModel.wordCount > 10
+        viewModel.textToTranslate.wordCount > 10
     }
 
     func loadingView() -> some View {

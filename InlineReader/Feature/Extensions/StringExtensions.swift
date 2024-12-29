@@ -272,6 +272,10 @@ public extension String {
 
         return input
     }
+
+    var wordCount: Int {
+        return self.split(whereSeparator: { $0.isWhitespace }).filter { !$0.isEmpty }.count
+    }
 }
 
 // https://stackoverflow.com/a/39425959

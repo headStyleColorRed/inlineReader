@@ -5,6 +5,7 @@ struct SelectedText: Identifiable {
     let text: String
 
     var lastSixtyWords: String {
+        guard text.wordCount > 60 else { return text }
         var splittedText = text.split(whereSeparator: { $0.isWhitespace })
             .filter { !$0.isEmpty }
             .prefix(60)

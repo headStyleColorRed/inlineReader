@@ -21,10 +21,6 @@ class TranslationViewModel: ObservableObject {
     private let openAIService: OpenAIService
     let settings: Settings
 
-    var wordCount: Int {
-        textToTranslate.split(whereSeparator: { $0.isWhitespace }).filter { !$0.isEmpty }.count
-    }
-
     init(text: SelectedText, settings: Settings) {
         self.textToTranslate = text.lastSixtyWords
         self.settings = settings
