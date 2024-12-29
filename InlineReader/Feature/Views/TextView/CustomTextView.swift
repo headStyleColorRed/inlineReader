@@ -97,18 +97,28 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
 
     func annotationFor(range: UITextRange?) -> Annotation? {
         guard let range else { return nil }
-        let rangeStart = range.start
-        let rangeEnd = range.end
 
-        let nsRange = NSRange(location: offset(from: beginningOfDocument, to: rangeStart),
-                              length: offset(from: rangeStart, to: rangeEnd))
+        let selectedRange = NSRange(location: offset(from: beginningOfDocument, to: range.start),
+                              length: offset(from: range.start, to: range.end))
+        print("selected range: \(selectedRange)")
 
         for annotation in annotations {
-            if annotation.range.location + annotation.range.length <= nsRange.location + nsRange.length {
+            print("Annotation range: \(annotation.range)")
+            if rangesCollide(annotation.range, selectedRange) {
                 return annotation
             }
         }
         return nil
+    }
+
+    func rangesCollide(_ range1: NSRange, _ range2: NSRange) -> Bool {
+        let start1 = range1.location
+        let end1 = start1 + range1.length
+        let start2 = range2.location
+        let end2 = start2 + range2.length
+
+        // Check if one range starts before the other ends
+        return start1 < end2 && start2 < end1
     }
 }
 
