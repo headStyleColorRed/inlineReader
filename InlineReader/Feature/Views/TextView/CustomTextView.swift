@@ -1,7 +1,7 @@
 import UIKit
 
 class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
-    var onTextSelected: ((String) -> Void)?
+    var selectionActions: SelectionActions?
 
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -41,7 +41,7 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
     @objc func translate(_ sender: Any?) {
         print("Starting translate action")
         if let selectedRange = self.selectedTextRange, let selectedText = self.text(in: selectedRange) {
-            onTextSelected?(selectedText)
+            selectionActions?.onTranslate(selectedText)
         }
         // Implement your chat functionality here
         print("Translate action performed.")
@@ -52,6 +52,8 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
         print("Starting annotation action")
         let attributedText = NSMutableAttributedString(attributedString: self.attributedText)
         let range = self.selectedRange
+        print("Selected range: \(range)")
+        self.selectionActions?.onAnnotate(range)
         attributedText.addAttribute(.backgroundColor, value: UIColor.yellow, range: range)
         self.attributedText = attributedText
         print("Annotation action performed.")
@@ -76,4 +78,9 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
 
         return UIMenu(children: [customCopyAction, chatAction, annotateAction])
     }
+}
+
+struct SelectionActions {
+    var onTranslate: (String) -> Void
+    var onAnnotate: (NSRange) -> Void
 }

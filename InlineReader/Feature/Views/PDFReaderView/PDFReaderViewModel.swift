@@ -3,20 +3,11 @@ import PDFKit
 
 class PDFReaderViewModel: ObservableObject {
     @Published var loading = true
-    @Published var pdfText: String = ""
+    @Published var pdfText: NSAttributedString = NSAttributedString(string: "")
 
     private let openAIService = OpenAIService(apiKey: Configuration.openAIApiKey)
 
     init() { }
-
-    func changePage(by: Int, file: File) {
-        loading = true
-        pdfText.removeAll()
-        file.currentPage += by
-        Task {
-            await loadPDFText(file: file)
-        }
-    }
 
     func loadPDFText(file: File) async {
         do {
@@ -35,7 +26,7 @@ class PDFReaderViewModel: ObservableObject {
             guard !fullText.isEmpty else { throw "No text found in this document." }
 
             DispatchQueue.main.async {
-                self.pdfText = fullText
+                self.pdfText = NSAttributedString(string: fullText)
             }
         } catch let error {
             print(error)

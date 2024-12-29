@@ -4,19 +4,12 @@ import SwiftUI
 struct SelectableTextView: UIViewRepresentable {
     let text: NSAttributedString
     let options: Settings
-    var onTextSelected: ((String) -> Void)?
+    let selectionActions: SelectionActions?
 
-    init(text: NSAttributedString, options: Settings, onTextSelected: ((String) -> Void)? = nil) {
+    init(text: NSAttributedString, options: Settings, selectionActions: SelectionActions? = nil) {
         self.text = text
         self.options = options
-        self.onTextSelected = onTextSelected
-    }
-
-    // Remove
-    init(text: String, options: Settings, onTextSelected: ((String) -> Void)? = nil) {
-        self.text = NSAttributedString(string: text)
-        self.options = options
-        self.onTextSelected = onTextSelected
+        self.selectionActions = selectionActions
     }
 
     func makeUIView(context: Context) -> CustomTextView {
@@ -25,7 +18,7 @@ struct SelectableTextView: UIViewRepresentable {
         textView.isSelectable = true
         textView.isUserInteractionEnabled = true
         textView.isScrollEnabled = true
-        textView.onTextSelected = onTextSelected
+        textView.selectionActions = selectionActions
         textView.font = UIFont.systemFont(ofSize: options.fontSize)
         textView.textContainer.lineFragmentPadding = 8
         textView.textContainer.lineBreakMode = .byWordWrapping

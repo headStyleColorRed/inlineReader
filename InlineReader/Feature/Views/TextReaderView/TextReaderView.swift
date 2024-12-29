@@ -10,12 +10,18 @@ struct TextReaderView: View {
         _viewModel = StateObject(wrappedValue: TextReaderViewModel(file: file))
     }
 
+    var selectionActions: SelectionActions {
+        return SelectionActions(onTranslate: { text in
+            selectedText = SelectedText(text: text)
+        }, onAnnotate: { range in
+            print("Annotation range: \(range)")
+        })
+    }
+
     var body: some View {
         NavigationView {
             HStack {
-                SelectableTextView(text: viewModel.text, options: viewModel.file.settings, onTextSelected: { text in
-                    selectedText = SelectedText(text: text)
-                })
+                SelectableTextView(text: viewModel.text, options: viewModel.file.settings, selectionActions: selectionActions)
                 .defersSystemGestures(on: .all)
                 .padding(EdgeInsets(top: 20,
                                   leading: UIDevice.current.userInterfaceIdiom == .pad ? 100 : 20,

@@ -18,7 +18,7 @@ final class File: CustomStringConvertible, Equatable {
     var currentPage: Int
     private var url: String
     var settings: Settings
-//    var attributedText: AttributedText
+    var annotations: [Annotation] = []
 
     init(url: URL) {
         self.id = UUID()
@@ -61,5 +61,17 @@ extension File {
             return nil
         }
         return documentsDirectory.appendingPathComponent(url)
+    }
+}
+
+@Model
+class Annotation {
+    var id = UUID()
+    var text: String
+    var range: NSRange
+
+    init(text: String, range: NSRange) {
+        self.text = text
+        self.range = range
     }
 }

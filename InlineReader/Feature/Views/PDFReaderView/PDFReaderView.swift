@@ -13,6 +13,14 @@ struct PDFReaderView: View {
         return UIDevice.current.userInterfaceIdiom == .pad ? 100 : 20
     }
 
+    var selectionActions: SelectionActions {
+        return SelectionActions(onTranslate: { text in
+            selectedText = SelectedText(text: text)
+        }, onAnnotate: { range in
+            print("Annotation range: \(range)")
+        })
+    }
+
     init(file: File) {
         self.file = file
     }
@@ -20,9 +28,7 @@ struct PDFReaderView: View {
     var body: some View {
         NavigationView {
             HStack {
-                SelectableTextView(text: viewModel.pdfText, options: file.settings, onTextSelected: { text in
-                    selectedText = SelectedText(text: text)
-                })
+                SelectableTextView(text: viewModel.pdfText, options: file.settings, selectionActions: selectionActions)
                 .defersSystemGestures(on: .all)
                 .padding(EdgeInsets(top: 20, leading: horizontalPadding, bottom: 20, trailing: horizontalPadding))
             }
