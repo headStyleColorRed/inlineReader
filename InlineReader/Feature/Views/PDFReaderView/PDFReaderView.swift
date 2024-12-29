@@ -1,9 +1,12 @@
 import SwiftUI
 import PDFKit
+import SwiftData
 
 struct PDFReaderView: View {
     @EnvironmentObject var mainViewModel: MainViewModel
     @StateObject private var viewModel = PDFReaderViewModel()
+    @Environment(\.modelContext) private var modelContext
+    @Query private var files: [File]
     @State private var selectedText: SelectedText? = nil
     @State private var showSettings = false
     @Environment(\.dismiss) private var dismiss
@@ -14,11 +17,21 @@ struct PDFReaderView: View {
     }
 
     var selectionActions: SelectionActions {
-        return SelectionActions(onTranslate: { text in
-            selectedText = SelectedText(text: text)
-        }, onAnnotate: { text, range in
-            print("Annotation range: \(range)")
-        })
+        return SelectionActions(
+            onTranslate: { text in
+                selectedText = SelectedText(text: text)
+            }, onAnnotate: { text, range in
+                guard let file = files.first(where: { $0.id == file.id }) else { return }
+                do {
+                    file.annotations.append(Annotation(text: text, range: range))
+                    try modelContext.save()
+                } catch {
+                    print("Error saving annotation: \(error)")
+                }
+            }, onRemoveAnnotation: { annotation in
+                guard let file = files.first(where: { $0.id == file.id }) else { return }
+                file.annotations.removeAll { $0.id == annotation.id }
+            })
     }
 
     init(file: File) {

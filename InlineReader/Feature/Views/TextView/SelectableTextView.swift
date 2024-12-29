@@ -25,6 +25,7 @@ struct SelectableTextView: UIViewRepresentable {
         textView.textContainer.lineFragmentPadding = 8
         textView.textContainer.lineBreakMode = .byWordWrapping
         textView.textAlignment = .right
+        textView.annotations = annotations
 
         // Determine the text color based on the current interface style
         let textColor: UIColor = context.environment.colorScheme == .dark ? .white : .black
@@ -87,5 +88,6 @@ struct SelectableTextView: UIViewRepresentable {
 
         // Set the updated attributed text
         uiView.attributedText = attributedString
+        uiView.annotations = annotations
     }
 }

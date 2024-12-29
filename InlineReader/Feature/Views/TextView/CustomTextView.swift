@@ -2,6 +2,7 @@ import UIKit
 
 class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
     var selectionActions: SelectionActions?
+    var annotations: [Annotation] = []
 
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -77,16 +78,42 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
             self.translate(nil)
         }
 
-        let annotateAction = UIAction(title: "Annotate", image: nil) { _ in
+
+        // Annotations
+        let annotation = annotationFor(range: self.selectedTextRange)
+        let annotationTitle = annotation != nil ? "Remove Annotation" : "Annotate"
+
+        let annotateAction = UIAction(title: annotationTitle, image: nil) { _ in
             print("Annotate action selected from menu")
-            self.annotate(nil)
+            if let annotation {
+                self.selectionActions?.onRemoveAnnotation(annotation)
+            } else {
+                self.annotate(nil)
+            }
         }
 
         return UIMenu(children: [customCopyAction, chatAction, annotateAction])
+    }
+
+    func annotationFor(range: UITextRange?) -> Annotation? {
+        guard let range else { return nil }
+        let rangeStart = range.start
+        let rangeEnd = range.end
+
+        let nsRange = NSRange(location: offset(from: beginningOfDocument, to: rangeStart),
+                              length: offset(from: rangeStart, to: rangeEnd))
+
+        for annotation in annotations {
+            if annotation.range.location + annotation.range.length <= nsRange.location + nsRange.length {
+                return annotation
+            }
+        }
+        return nil
     }
 }
 
 struct SelectionActions {
     var onTranslate: (String) -> Void
     var onAnnotate: (String, NSRange) -> Void
+    var onRemoveAnnotation: (Annotation) -> Void
 }

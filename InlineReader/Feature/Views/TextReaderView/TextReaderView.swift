@@ -14,7 +14,8 @@ struct TextReaderView: View {
     }
 
     var selectionActions: SelectionActions {
-        return SelectionActions(onTranslate: { text in
+        return SelectionActions(
+            onTranslate: { text in
             selectedText = SelectedText(text: text)
         }, onAnnotate: { text, range in
             guard let file = files.first(where: { $0.id == viewModel.file.id }) else { return }
@@ -24,6 +25,9 @@ struct TextReaderView: View {
             } catch {
                 print("Error saving annotation: \(error)")
             }
+        }, onRemoveAnnotation: { annotation in
+            guard let file = files.first(where: { $0.id == viewModel.file.id }) else { return }
+            file.annotations.removeAll { $0.id == annotation.id }
         })
     }
 
