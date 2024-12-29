@@ -39,9 +39,9 @@ struct TextReaderView: View {
                                    annotations: viewModel.file.annotations,
                                    selectionActions: selectionActions)
                 .defersSystemGestures(on: .all)
-                .padding(EdgeInsets(top: 20,
+                .padding(EdgeInsets(top: 0,
                                   leading: UIDevice.current.userInterfaceIdiom == .pad ? 100 : 20,
-                                  bottom: 20,
+                                  bottom: 0,
                                   trailing: UIDevice.current.userInterfaceIdiom == .pad ? 100 : 20))
             }
             .sheet(item: $selectedText) { text in
