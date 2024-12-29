@@ -40,7 +40,7 @@ struct PDFReaderView: View {
             }
             .sheet(isPresented: $showSettings) {
                 NavigationStack {
-                    PDFReaderSettingsView(file: file)
+                    ReaderSettingsView(file: file)
                 }
             }
             .onAppear {

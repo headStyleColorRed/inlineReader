@@ -35,7 +35,7 @@ struct TextReaderView: View {
             }
             .sheet(isPresented: $showSettings) {
                 NavigationStack {
-                    PDFReaderSettingsView(file: viewModel.file)
+                    ReaderSettingsView(file: viewModel.file)
                 }
             }
             .onAppear {

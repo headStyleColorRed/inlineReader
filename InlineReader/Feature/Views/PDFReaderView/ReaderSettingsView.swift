@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 import NaturalLanguage
 
-struct PDFReaderSettingsView: View {
+struct ReaderSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var file: File
 
@@ -57,5 +57,5 @@ struct PDFReaderSettingsView: View {
 }
 
 #Preview(traits: .landscapeLeft) {
-    PDFReaderSettingsView(file: File(url: URL(string: "Documents/%D7%99%D7%9C%D7%93%D7%94%20%D7%A7%D7%98%D7%A0%D7%94%20%D7%95%D7%97%D7%91%D7%A8%20%D7%97%D7%93%D7%A9.pdf")!))
+    ReaderSettingsView(file: File(url: URL(string: "Documents/%D7%99%D7%9C%D7%93%D7%94%20%D7%A7%D7%98%D7%A0%D7%94%20%D7%95%D7%97%D7%91%D7%A8%20%D7%97%D7%93%D7%A9.pdf")!))
 }
