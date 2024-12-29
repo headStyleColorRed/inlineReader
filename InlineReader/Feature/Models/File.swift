@@ -68,10 +68,16 @@ extension File {
 class Annotation {
     var id = UUID()
     var text: String
-    var range: NSRange
+    private var _location: Int
+    private var _range: Int
+
+    var range: NSRange {
+        return NSRange(location: _location, length: _range)
+    }
 
     init(text: String, range: NSRange) {
         self.text = text
-        self.range = range
+        self._location = range.location
+        self._range = range.length
     }
 }

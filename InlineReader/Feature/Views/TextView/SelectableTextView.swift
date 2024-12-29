@@ -4,11 +4,13 @@ import SwiftUI
 struct SelectableTextView: UIViewRepresentable {
     let text: NSAttributedString
     let options: Settings
+    let annotations: [Annotation]
     let selectionActions: SelectionActions?
 
-    init(text: NSAttributedString, options: Settings, selectionActions: SelectionActions? = nil) {
+    init(text: NSAttributedString, options: Settings, annotations: [Annotation], selectionActions: SelectionActions? = nil) {
         self.text = text
         self.options = options
+        self.annotations = annotations
         self.selectionActions = selectionActions
     }
 
@@ -39,8 +41,17 @@ struct SelectableTextView: UIViewRepresentable {
             .foregroundColor: textColor
         ]
 
-        // Apply attributes to the text
-        let attributedString = NSAttributedString(string: text.string, attributes: attributes)
+        // Create a mutable attributed string to allow modifications
+        let attributedString = NSMutableAttributedString(string: text.string, attributes: attributes)
+
+        // Add annotations to the text
+        for annotation in annotations {
+            // Check if the range is valid
+            if annotation.range.location + annotation.range.length <= attributedString.length {
+                attributedString.addAttribute(.backgroundColor, value: UIColor.yellow, range: annotation.range)
+            }
+        }
+
         textView.attributedText = attributedString
 
         return textView
@@ -61,8 +72,20 @@ struct SelectableTextView: UIViewRepresentable {
             .foregroundColor: textColor
         ]
 
-        let attributedString = NSAttributedString(string: text.string, attributes: attributes)
+        // Create a mutable attributed string to allow modifications
+        let attributedString = NSMutableAttributedString(string: text.string, attributes: attributes)
         uiView.attributedText = attributedString
         uiView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+
+        // Add annotations to the text
+        for annotation in annotations {
+            // Check if the range is valid
+            if annotation.range.location + annotation.range.length <= attributedString.length {
+                attributedString.addAttribute(.backgroundColor, value: UIColor.yellow, range: annotation.range)
+            }
+        }
+
+        // Set the updated attributed text
+        uiView.attributedText = attributedString
     }
 }

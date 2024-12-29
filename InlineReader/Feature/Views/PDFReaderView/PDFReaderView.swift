@@ -16,7 +16,7 @@ struct PDFReaderView: View {
     var selectionActions: SelectionActions {
         return SelectionActions(onTranslate: { text in
             selectedText = SelectedText(text: text)
-        }, onAnnotate: { range in
+        }, onAnnotate: { text, range in
             print("Annotation range: \(range)")
         })
     }
@@ -28,7 +28,12 @@ struct PDFReaderView: View {
     var body: some View {
         NavigationView {
             HStack {
-                SelectableTextView(text: viewModel.pdfText, options: file.settings, selectionActions: selectionActions)
+                SelectableTextView(
+                    text: viewModel.pdfText,
+                    options: file.settings,
+                    annotations: file.annotations,
+                    selectionActions: selectionActions
+                )
                 .defersSystemGestures(on: .all)
                 .padding(EdgeInsets(top: 20, leading: horizontalPadding, bottom: 20, trailing: horizontalPadding))
             }

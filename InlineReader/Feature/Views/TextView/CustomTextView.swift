@@ -49,14 +49,20 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
 
     // Annotation action
     @objc func annotate(_ sender: Any?) {
-        print("Starting annotation action")
-        let attributedText = NSMutableAttributedString(attributedString: self.attributedText)
         let range = self.selectedRange
-        print("Selected range: \(range)")
-        self.selectionActions?.onAnnotate(range)
-        attributedText.addAttribute(.backgroundColor, value: UIColor.yellow, range: range)
+        let textRange = self.selectedTextRange
+        print("1. Annotating text in range: \(range), text range: \(String(describing: textRange))")
+        // Get current attributed text
+        let attributedText = NSMutableAttributedString(attributedString: self.attributedText)
+        // Add a yellow background color to the selected range
+        attributedText.addAttribute(.backgroundColor, value: UIColor.yellow, range: self.selectedRange)
+        // Set the attributed text back to the text view
         self.attributedText = attributedText
-        print("Annotation action performed.")
+        // Pass the selected text and range to the selectionActions closure
+        if let rangeToAnnotate = textRange, let selectedText = self.text(in: rangeToAnnotate) {
+            print("2. Annotating text: \(selectedText) in range: \(range)")
+            selectionActions?.onAnnotate(selectedText, range)
+        }
     }
 
     override func editMenu(for textRange: UITextRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
@@ -82,5 +88,5 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
 
 struct SelectionActions {
     var onTranslate: (String) -> Void
-    var onAnnotate: (NSRange) -> Void
+    var onAnnotate: (String, NSRange) -> Void
 }

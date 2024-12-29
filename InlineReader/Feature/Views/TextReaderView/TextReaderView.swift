@@ -1,7 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct TextReaderView: View {
     @StateObject private var viewModel: TextReaderViewModel
+    @Environment(\.modelContext) private var modelContext
+    @Query private var files: [File]
     @State private var selectedText: SelectedText? = nil
     @State private var showSettings = false
     @Environment(\.dismiss) private var dismiss
@@ -13,15 +16,24 @@ struct TextReaderView: View {
     var selectionActions: SelectionActions {
         return SelectionActions(onTranslate: { text in
             selectedText = SelectedText(text: text)
-        }, onAnnotate: { range in
-            print("Annotation range: \(range)")
+        }, onAnnotate: { text, range in
+            guard let file = files.first(where: { $0.id == viewModel.file.id }) else { return }
+            do {
+                file.annotations.append(Annotation(text: text, range: range))
+                try modelContext.save()
+            } catch {
+                print("Error saving annotation: \(error)")
+            }
         })
     }
 
     var body: some View {
         NavigationView {
             HStack {
-                SelectableTextView(text: viewModel.text, options: viewModel.file.settings, selectionActions: selectionActions)
+                SelectableTextView(text: viewModel.text,
+                                   options: viewModel.file.settings,
+                                   annotations: viewModel.file.annotations,
+                                   selectionActions: selectionActions)
                 .defersSystemGestures(on: .all)
                 .padding(EdgeInsets(top: 20,
                                   leading: UIDevice.current.userInterfaceIdiom == .pad ? 100 : 20,
