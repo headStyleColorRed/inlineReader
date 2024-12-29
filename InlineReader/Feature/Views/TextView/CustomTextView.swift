@@ -50,12 +50,10 @@ class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
     // Annotation action
     @objc func annotate(_ sender: Any?) {
         print("Starting annotation action")
-        if let selectedRange = self.selectedTextRange {
-            let attributedText = NSMutableAttributedString(attributedString: self.attributedText)
-            let range = self.selectedRange
-            attributedText.addAttribute(.backgroundColor, value: UIColor.yellow, range: range)
-            self.attributedText = attributedText
-        }
+        let attributedText = NSMutableAttributedString(attributedString: self.attributedText)
+        let range = self.selectedRange
+        attributedText.addAttribute(.backgroundColor, value: UIColor.yellow, range: range)
+        self.attributedText = attributedText
         print("Annotation action performed.")
     }
 
