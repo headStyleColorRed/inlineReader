@@ -1,5 +1,9 @@
 import SwiftUI
 
+struct Constants {
+    static let lightAnnotationColor: UIColor = .yellow
+    static let darkAnnotationColor: UIColor = .orange
+}
 
 struct SelectableTextView: UIViewRepresentable {
     let text: NSAttributedString
@@ -49,7 +53,8 @@ struct SelectableTextView: UIViewRepresentable {
         for annotation in annotations {
             // Check if the range is valid
             if annotation.range.location + annotation.range.length <= attributedString.length {
-                attributedString.addAttribute(.backgroundColor, value: UIColor.yellow, range: annotation.range)
+                let backgroundColor = context.environment.colorScheme == .dark ? Constants.darkAnnotationColor : Constants.lightAnnotationColor
+                attributedString.addAttribute(.backgroundColor, value: backgroundColor, range: annotation.range)
             }
         }
 
@@ -82,7 +87,8 @@ struct SelectableTextView: UIViewRepresentable {
         for annotation in annotations {
             // Check if the range is valid
             if annotation.range.location + annotation.range.length <= attributedString.length {
-                attributedString.addAttribute(.backgroundColor, value: UIColor.yellow, range: annotation.range)
+                let backgroundColor = context.environment.colorScheme == .dark ? Constants.darkAnnotationColor : Constants.lightAnnotationColor
+                attributedString.addAttribute(.backgroundColor, value: backgroundColor, range: annotation.range)
             }
         }
 

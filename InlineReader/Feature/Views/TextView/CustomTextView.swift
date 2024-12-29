@@ -1,9 +1,4 @@
 import UIKit
-struct Constants {
-    var lightAnnotationColor: UIColor = .yellow
-    var darkAnnotationColor: UIColor = .blue
-}
-
 class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
     var selectionActions: SelectionActions?
     var annotations: [Annotation] = []
