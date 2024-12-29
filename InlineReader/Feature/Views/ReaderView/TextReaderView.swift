@@ -54,9 +54,6 @@ struct TextReaderView: View {
                     ReaderSettingsView(file: viewModel.file)
                 }
             }
-            .onAppear {
-                viewModel.file.updateLastOpened()
-            }
             .navigationTitle(viewModel.file.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -78,9 +75,8 @@ struct TextReaderView: View {
             }
         }
         .onAppear {
-            Task {
-                await viewModel.loadText(file: viewModel.file)
-            }
+            viewModel.file.updateLastOpened()
+            viewModel.viewDidLoad()
         }
     }
 }

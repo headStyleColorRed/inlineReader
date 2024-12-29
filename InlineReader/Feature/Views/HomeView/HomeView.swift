@@ -108,15 +108,8 @@ struct HomeView: View {
             mainViewModel.columnVisibility = .all
         }
         .fullScreenCover(item: $readFile) { file in
-            if let url = file.fullURL, url.pathExtension.lowercased() == "txt" {
-                TextReaderView(file: file)
-                    .environmentObject(mainViewModel)
-                    .edgesIgnoringSafeArea(.all)
-            } else {
-                PDFReaderView(file: file)
-                    .environmentObject(mainViewModel)
-                    .edgesIgnoringSafeArea(.all)
-            }
+            TextReaderView(file: file)
+                .environmentObject(mainViewModel)
         }
     }
 }

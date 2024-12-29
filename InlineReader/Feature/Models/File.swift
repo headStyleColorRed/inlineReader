@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import UniformTypeIdentifiers
 
 @Model
 final class File: CustomStringConvertible, Equatable {
@@ -19,6 +20,18 @@ final class File: CustomStringConvertible, Equatable {
     private var url: String
     var settings: Settings
     var annotations: [Annotation] = []
+
+    var fileType: UTType {
+        guard let url = fullURL else { return .item }
+        let components = url.pathExtension.split(separator: ".")
+        guard let lastComponent = components.last?.lowercased() else { return .item }
+
+        switch lastComponent {
+        case "pdf": return .pdf
+        case "txt": return .text
+        default: return .item
+        }
+    }
 
     init(url: URL) {
         self.id = UUID()
