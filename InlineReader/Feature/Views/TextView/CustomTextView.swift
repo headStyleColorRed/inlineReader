@@ -1,4 +1,5 @@
 import UIKit
+
 class CustomTextView: UITextView, UIEditMenuInteractionDelegate {
     var selectionActions: SelectionActions?
     var annotations: [Annotation] = []

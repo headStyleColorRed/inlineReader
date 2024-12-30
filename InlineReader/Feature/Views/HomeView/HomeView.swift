@@ -11,8 +11,9 @@ import SwiftData
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var mainViewModel: MainViewModel
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Query private var files: [File]
-    @State private var gridColumns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 3)
+    @State private var gridColumns: [GridItem] = []
     @State private var readFile: File? = nil
 
     var sortedFiles: [File] {
@@ -106,10 +107,24 @@ struct HomeView: View {
         .navigationTitle("Library")
         .onAppear {
             mainViewModel.columnVisibility = .all
+            updateGridColumns()
+        }
+        .onChange(of: horizontalSizeClass) {
+            updateGridColumns()
         }
         .fullScreenCover(item: $readFile) { file in
             TextReaderView(file: file)
                 .environmentObject(mainViewModel)
+        }
+    }
+
+    private func updateGridColumns() {
+        if horizontalSizeClass == .compact {
+            // iPhone layout
+            gridColumns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
+        } else {
+            // iPad layout
+            gridColumns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 3)
         }
     }
 }
