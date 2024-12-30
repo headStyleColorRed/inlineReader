@@ -17,7 +17,12 @@ struct Mainview: View {
     @StateObject private var viewModel = MainViewModel()
     @Environment(\.modelContext) private var modelContext
     @State private var isFilePickerPresented = false
+    @State private var navigationDestination: NavigationDestination?
     @Query private var files: [File]
+
+    enum NavigationDestination: Hashable {
+        case home
+    }
 
     var body: some View {
         NavigationSplitView(columnVisibility: $viewModel.columnVisibility) {
@@ -40,9 +45,20 @@ struct Mainview: View {
                     fileImported(result: result)
                 }
             }
+            .navigationDestination(item: $navigationDestination) { destination in
+                switch destination {
+                case .home:
+                    HomeView()
+                        .environmentObject(viewModel)
+                }
+            }
         } detail: {
             HomeView()
                 .environmentObject(viewModel)
+        }
+        .onAppear {
+            guard !files.isEmpty else { return }
+            navigationDestination = .home
         }
     }
 
