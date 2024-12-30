@@ -84,7 +84,7 @@ struct Mainview: View {
 
                     // If file is not in the model context, add it
                     if !files.contains(File(url: destinationURL)) {
-                        let thumbNailData = generateThumbnail(url: destinationURL, fileType: UTType(url.pathExtension))
+                        let thumbNailData = generateThumbnail(url: destinationURL, fileType: url.fileType)
                         let file = File(url: destinationURL, thumbNail: thumbNailData)
                         print("Imported file:")
                         print(file)

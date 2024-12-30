@@ -26,14 +26,7 @@ final class File: CustomStringConvertible, Equatable {
 
     var fileType: UTType {
         guard let url = fullURL else { return .item }
-        let components = url.pathExtension.split(separator: ".")
-        guard let lastComponent = components.last?.lowercased() else { return .item }
-
-        switch lastComponent {
-        case "pdf": return .pdf
-        case "txt": return .text
-        default: return .item
-        }
+        return url.fileType
     }
 
     init(url: URL, thumbNail: Data? = nil) {
@@ -78,6 +71,19 @@ extension File {
             return nil
         }
         return documentsDirectory.appendingPathComponent(url)
+    }
+}
+
+extension URL {
+    var fileType: UTType {
+        let components = self.pathExtension.split(separator: ".")
+        guard let lastComponent = components.last?.lowercased() else { return .item }
+
+        switch lastComponent {
+        case "pdf": return .pdf
+        case "txt": return .text
+        default: return .item
+        }
     }
 }
 
