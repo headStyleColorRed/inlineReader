@@ -94,6 +94,7 @@ struct Mainview: View {
                     print("Error copying file: \(error.localizedDescription)")
                 }
                 url.stopAccessingSecurityScopedResource()
+                navigationDestination = .home
             }
 
         case .failure(let error):
