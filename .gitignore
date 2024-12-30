@@ -45,7 +45,8 @@ fastlane/test_output
 
 # Archives
 *.xcarchive
-*.xcdebugger
+xcdebugger/*
+*.xcbkptlist
 
 # Other
 *.hmap
