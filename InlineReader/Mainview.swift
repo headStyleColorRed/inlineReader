@@ -32,7 +32,7 @@ struct Mainview: View {
                     HomeView()
                         .environmentObject(viewModel)
                 } label: {
-                    Label("Library", systemImage: "book")
+                    Label("Shelve", systemImage: "book")
                 }
 
                 Button {
