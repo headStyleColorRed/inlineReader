@@ -53,6 +53,7 @@ struct TextReaderView: View {
                 NavigationStack {
                     ReaderSettingsView(file: viewModel.file)
                 }
+                .presentationDetents([.medium])
             }
             .navigationTitle(viewModel.file.name)
             .navigationBarTitleDisplayMode(.inline)
