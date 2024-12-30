@@ -56,10 +56,3 @@ public extension Color {
                       lroundf(blue * 255))
     }
 }
-
-extension Color {
-    static var main: Color { return Color(hex: "#222831") }
-    static var secondary: Color { return Color(hex: "#31363F") }
-    static var details: Color { return Color(hex: "#76ABAE") }
-    static var whites: Color { return Color(hex: "#EEEEEE") }
-}

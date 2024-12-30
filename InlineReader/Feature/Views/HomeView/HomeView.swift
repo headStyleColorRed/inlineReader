@@ -36,7 +36,7 @@ struct HomeView: View {
             if files.isEmpty {
                 Text("No files available, import a PDF to get started")
                     .font(.headline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                     .padding()
             } else {
                 LazyVGrid(columns: gridColumns, spacing: 16) {
@@ -46,40 +46,43 @@ struct HomeView: View {
                         }) {
                             VStack {
                                 RoundedRectangle(cornerRadius: 8)
-                                    .fill(Color.gray.opacity(0.2))
+                                    .fill(LinearGradient(
+                                        gradient: Gradient(colors: [Color(UIColor.systemBackground), Color(UIColor.secondarySystemBackground)]),
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    ))
                                     .aspectRatio(3/4, contentMode: .fit)
                                     .overlay(
                                         Image(systemName: "doc.text.fill")
                                             .resizable()
                                             .scaledToFit()
-                                            .foregroundColor(.blue)
+                                            .foregroundColor(.accentColor)
                                             .padding(20)
                                     )
+                                    .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 2)
 
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(file.name)
                                         .font(.headline)
                                         .lineLimit(2)
-                                        .foregroundColor(.black)
+                                        .foregroundColor(.primary)
                                     if let lastOpened = file.lastOpened {
-                                        Text("Last opened: \(lastOpened.formatted(date: .abbreviated, time: .shortened))")
+                                        Text(lastOpened.formatted(date: .abbreviated, time: .shortened))
                                             .font(.caption)
-                                            .foregroundColor(.black)
+                                            .foregroundColor(.secondary)
                                     } else {
                                         Text("Never opened")
                                             .font(.caption)
-                                            .foregroundColor(.black)
+                                            .foregroundColor(.secondary)
                                     }
-
-                                    ProgressView(value: Double(file.progress) / 100)
-                                        .tint(.blue)
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.horizontal, 8)
                             }
-                            .background(Color.white)
+                            .background(Color(UIColor.systemBackground))
                             .cornerRadius(12)
-                            .shadow(radius: 2)
+                            .shadow(radius: 4)
+                            .padding(.vertical, 4)
                         }
                         .buttonStyle(PlainButtonStyle())
                         .contextMenu {
@@ -91,12 +94,7 @@ struct HomeView: View {
                                 try? modelContext.save()
                             }) {
                                 Label("Delete", systemImage: "trash")
-                            }
-
-                            Button(action: {
-                                file.progress = 0
-                            }) {
-                                Label("Reset Progress", systemImage: "arrow.counterclockwise")
+                                    .foregroundStyle(Color.red)
                             }
                         }
                     }
