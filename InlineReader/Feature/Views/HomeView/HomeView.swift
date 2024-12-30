@@ -86,6 +86,7 @@ struct HomeView: View {
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.horizontal, 8)
+                                Spacer()
                             }
                             .cornerRadius(12)
                             .padding(.vertical, 4)
