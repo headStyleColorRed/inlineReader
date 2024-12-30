@@ -8,6 +8,8 @@
 import Foundation
 import SwiftData
 import UniformTypeIdentifiers
+import PDFKit
+import UIKit
 
 @Model
 final class File: CustomStringConvertible, Equatable {
@@ -20,6 +22,7 @@ final class File: CustomStringConvertible, Equatable {
     private var url: String
     var settings: Settings
     var annotations: [Annotation] = []
+    var thumbnailData: Data?
 
     var fileType: UTType {
         guard let url = fullURL else { return .item }
@@ -33,7 +36,7 @@ final class File: CustomStringConvertible, Equatable {
         }
     }
 
-    init(url: URL) {
+    init(url: URL, thumbNail: Data? = nil) {
         self.id = UUID()
         self.progress = 0
         self.dateAdded = Date()
@@ -43,6 +46,7 @@ final class File: CustomStringConvertible, Equatable {
         // The name will be the last path component without the extension
         self.name = url.lastPathComponent.replacingOccurrences(of: ".\(url.pathExtension)", with: "")
         self.settings = Settings()
+        self.thumbnailData = thumbNail
     }
 
     func updateLastOpened() {

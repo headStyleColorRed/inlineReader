@@ -49,12 +49,23 @@ struct HomeView: View {
                                     .fill(Color(UIColor.systemBackground))
                                     .aspectRatio(3/4, contentMode: .fit)
                                     .overlay(
-                                        Image(systemName: "doc.text.fill")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .foregroundColor(.accentColor)
-                                            .padding(20)
+                                        Group {
+                                            if let thumbnailData = file.thumbnailData,
+                                               let uiImage = UIImage(data: thumbnailData) {
+                                                Image(uiImage: uiImage)
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .clipped()
+                                            } else {
+                                                Image(systemName: "doc.text.fill")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .foregroundColor(.accentColor)
+                                                    .padding(20)
+                                            }
+                                        }
                                     )
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
                                     .shadow(radius: 4)
                                     .padding(5)
 
