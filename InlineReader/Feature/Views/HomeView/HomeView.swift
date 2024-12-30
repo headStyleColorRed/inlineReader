@@ -46,11 +46,7 @@ struct HomeView: View {
                         }) {
                             VStack {
                                 RoundedRectangle(cornerRadius: 8)
-                                    .fill(LinearGradient(
-                                        gradient: Gradient(colors: [Color(UIColor.systemBackground), Color(UIColor.secondarySystemBackground)]),
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    ))
+                                    .fill(Color(UIColor.systemBackground))
                                     .aspectRatio(3/4, contentMode: .fit)
                                     .overlay(
                                         Image(systemName: "doc.text.fill")
@@ -59,7 +55,8 @@ struct HomeView: View {
                                             .foregroundColor(.accentColor)
                                             .padding(20)
                                     )
-                                    .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                    .shadow(radius: 4)
+                                    .padding(5)
 
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(file.name)
@@ -79,9 +76,7 @@ struct HomeView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.horizontal, 8)
                             }
-                            .background(Color(UIColor.systemBackground))
                             .cornerRadius(12)
-                            .shadow(radius: 4)
                             .padding(.vertical, 4)
                         }
                         .buttonStyle(PlainButtonStyle())
