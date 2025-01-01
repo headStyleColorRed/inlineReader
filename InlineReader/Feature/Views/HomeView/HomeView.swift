@@ -10,7 +10,7 @@ import SwiftData
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
-    @EnvironmentObject var mainViewModel: MainViewModel
+    @EnvironmentObject var mainViewModel: SidebarViewModel
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Query private var files: [File]
     @State private var gridColumns: [GridItem] = []
@@ -135,6 +135,6 @@ struct HomeView: View {
 }
 
 #Preview(traits: .landscapeLeft) {
-    Mainview()
+    SidebarView()
         .modelContainer(for: File.self, inMemory: true)
 }

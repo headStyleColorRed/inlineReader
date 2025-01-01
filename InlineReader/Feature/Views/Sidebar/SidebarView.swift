@@ -11,7 +11,7 @@ import UniformTypeIdentifiers
 import PDFKit
 import AuthenticationServices
 
-class MainViewModel: ObservableObject {
+class SidebarViewModel: ObservableObject {
     @Published var columnVisibility = NavigationSplitViewVisibility.all
     @Published var isSignInSheetPresented = false
 
@@ -20,8 +20,8 @@ class MainViewModel: ObservableObject {
     }
 }
 
-struct Mainview: View {
-    @StateObject private var viewModel = MainViewModel()
+struct SidebarView: View {
+    @StateObject private var viewModel = SidebarViewModel()
     @Environment(\.modelContext) private var modelContext
     @State private var isFilePickerPresented = false
     @State private var navigationDestination: NavigationDestination?
@@ -201,6 +201,6 @@ struct SignInView: View {
 }
 
 #Preview() {
-    Mainview()
+    SidebarView()
         .modelContainer(for: File.self, inMemory: true)
 }

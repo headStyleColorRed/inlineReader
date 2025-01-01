@@ -26,7 +26,7 @@ struct InlineReaderApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Mainview()
+            SidebarView()
         }
         .modelContainer(sharedModelContainer)
     }
