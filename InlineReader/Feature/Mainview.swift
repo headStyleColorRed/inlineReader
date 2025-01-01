@@ -16,7 +16,7 @@ class MainViewModel: ObservableObject {
     @Published var isSignInSheetPresented = false
 
     func registerOrCreateUser() {
-        
+
     }
 }
 

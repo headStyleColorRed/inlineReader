@@ -1,0 +1,11 @@
+query RetrieveUser($id: ID!) {
+    private {
+        user(id: $id) {
+            id
+            email
+            role
+            name
+            age
+        }
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "schemaNamespace" : "API",
+    "input" : {
+      "operationSearchPaths" : [
+        "./inlineReader/apollo/Files/**/*.graphql"
+      ],
+      "schemaSearchPaths" : [
+        "./inlineReader/apollo/schema.json"
+      ]
+    },
+    "output" : {
+      "testMocks" : {
+        "none" : {
+        }
+      },
+      "schemaTypes" : {
+        "path" : "./inlineReader/apollo",
+        "moduleType" : {
+          "embeddedInTarget" : {
+            "name" : "inlineReader"
+          }
+        }
+      },
+      "operations" : {
+        "inSchemaModule" : {
+        }
+      }
+    }
+  }

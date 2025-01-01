@@ -1,0 +1,7 @@
+fragment UserShortFragment on User {
+    id
+    email
+    name
+    role
+}
+

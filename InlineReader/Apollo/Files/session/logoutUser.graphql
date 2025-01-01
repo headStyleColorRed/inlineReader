@@ -1,0 +1,7 @@
+mutation LogoutUser {
+	private {
+		logoutUser {
+			success
+		}
+	}
+}
