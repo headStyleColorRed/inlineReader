@@ -9,9 +9,15 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 import PDFKit
+import AuthenticationServices
 
 class MainViewModel: ObservableObject {
     @Published var columnVisibility = NavigationSplitViewVisibility.all
+    @Published var isSignInSheetPresented = false
+
+    func registerOrCreateUser() {
+        
+    }
 }
 
 struct Mainview: View {
@@ -53,9 +59,21 @@ struct Mainview: View {
                         .environmentObject(viewModel)
                 }
             }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        viewModel.isSignInSheetPresented = true
+                    }) {
+                        Image(systemName: "person.circle")
+                    }
+                }
+            }
         } detail: {
             HomeView()
                 .environmentObject(viewModel)
+        }
+        .sheet(isPresented: $viewModel.isSignInSheetPresented) {
+            SignInView()
         }
         .onAppear {
             guard !files.isEmpty else { return }
@@ -144,7 +162,45 @@ struct Mainview: View {
     }
 }
 
-#Preview(traits: .landscapeLeft) {
+struct SignInView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Sign In")
+                .font(.title)
+                .fontWeight(.bold)
+
+            // Add the subtext here
+            Text("Choose a sign in method to create or access your account. Your account will sync your reading progress across devices and track your reading time.")
+                .font(.subheadline)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+
+            SignInWithAppleButton(
+                onRequest: { request in
+                    request.requestedScopes = [.fullName, .email]
+                },
+                onCompletion: { result in
+                    switch result {
+                    case .success(let authResults):
+                        print("Authorization successful: \(authResults)")
+                        // Handle successful sign in
+
+                    case .failure(let error):
+                        print("Authorization failed: \(error.localizedDescription)")
+                        // Until our developer portal is available we will use the following code to sign in
+                        // This code will be removed once the developer portal is available
+                        
+                    }
+                }
+            )
+            .frame(height: 44)
+            .padding(.horizontal, 40)
+        }
+        .padding()
+    }
+}
+
+#Preview() {
     Mainview()
         .modelContainer(for: File.self, inMemory: true)
 }
