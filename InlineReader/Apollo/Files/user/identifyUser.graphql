@@ -1,0 +1,3 @@
+query IdentifyUser($email: String!) {
+  identifyUser(email: $email)
+}
