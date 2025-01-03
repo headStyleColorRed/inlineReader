@@ -92,73 +92,71 @@ class LoginViewModel: ObservableObject {
 }
 
 struct LoginView: View {
+    @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = LoginViewModel()
     @Namespace private var animation
 
     var body: some View {
-        ZStack {
-            
+        VStack(spacing: 20) {
+            Text(viewModel.isCreatingAccount ? "Create Account" : "Login")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+
+            Spacer()
             VStack(spacing: 20) {
-                Text(viewModel.isCreatingAccount ? "Create Account" : "Login")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                CustomTextField(icon: "envelope", placeholder: "Email", text: $viewModel.email)
 
-                Spacer()
-                VStack(spacing: 20) {
-                    CustomTextField(icon: "envelope", placeholder: "Email", text: $viewModel.email)
+                CustomTextField(icon: "lock", placeholder: "Password", text: $viewModel.password, isSecure: true)
 
-                    CustomTextField(icon: "lock", placeholder: "Password", text: $viewModel.password, isSecure: true)
+                if viewModel.isCreatingAccount {
+                    CustomTextField(icon: "lock", placeholder: "Confirm Password", text: $viewModel.confirmPassword, isSecure: true)
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
+            }
+            .padding(.top, 50)
 
+            Spacer()
+            Button(action: {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    // Hide keyboard
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     if viewModel.isCreatingAccount {
-                        CustomTextField(icon: "lock", placeholder: "Confirm Password", text: $viewModel.confirmPassword, isSecure: true)
-                            .transition(.move(edge: .trailing).combined(with: .opacity))
+                        viewModel.createAccount()
+                    } else {
+                        viewModel.login()
                     }
                 }
-                .padding(.top, 50)
+            }) {
+                Text(viewModel.isCreatingAccount ? "Create Account" : "Login")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(!viewModel.disabledButton ? Color.blue : Color.gray)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .disabled(viewModel.disabledButton)
+            .matchedGeometryEffect(id: "actionButton", in: animation)
 
-                Spacer()
-                Button(action: {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        // Hide keyboard
-                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                        if viewModel.isCreatingAccount {
-                            viewModel.createAccount()
-                        } else {
-                            viewModel.login()
-                        }
-                    }
-                }) {
-                    Text(viewModel.isCreatingAccount ? "Create Account" : "Login")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(!viewModel.disabledButton ? Color.blue : Color.gray)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+            Button(action: {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    viewModel.isCreatingAccount.toggle()
                 }
-                .disabled(viewModel.disabledButton)
-                .matchedGeometryEffect(id: "actionButton", in: animation)
-
-                Button(action: {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        viewModel.isCreatingAccount.toggle()
-                    }
-                }) {
-                    Text(viewModel.isCreatingAccount ? "Already have an account? Login" : "Don't have an account? Sign up")
-                        .foregroundColor(.blue)
-                }.disabled(viewModel.isLoading)
+            }) {
+                Text(viewModel.isCreatingAccount ? "Already have an account? Login" : "Don't have an account? Sign up")
+                    .foregroundColor(.blue)
+            }.disabled(viewModel.isLoading)
+        }
+        .padding()
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: viewModel.isCreatingAccount)
+        .overlay {
+            if viewModel.isLoading {
+                ProgressView()
+                    .scaleEffect(1.5)
             }
-            .padding()
-            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: viewModel.isCreatingAccount)
-            .overlay {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                }
-            }
-            .navigationBarBackButtonHidden()
-            .navigationDestination(isPresented: $viewModel.userLogedInCorrectly) {
-                Text("")
-            }
+        }
+        .onChange(of: viewModel.userLogedInCorrectly) { _, newValue in
+            guard newValue else { return }
+            dismiss()
         }
     }
 }

@@ -32,12 +32,11 @@ extension API {
       case "CreateUserPayload": return API.Objects.CreateUserPayload
       case "DeleteUserPayload": return API.Objects.DeleteUserPayload
       case "LoginUserPayload": return API.Objects.LoginUserPayload
-      case "LogoutUserPayload": return API.Objects.LogoutUserPayload
       case "Mutation": return API.Objects.Mutation
       case "Private": return API.Objects.Private
       case "Query": return API.Objects.Query
+      case "UploadFilePayload": return API.Objects.UploadFilePayload
       case "User": return API.Objects.User
-      case "UserFile": return API.Objects.UserFile
       default: return nil
       }
     }

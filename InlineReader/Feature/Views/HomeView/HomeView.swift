@@ -163,25 +163,25 @@ struct HomeView: View {
 
         isUploading = true
 
-        Task {
-            do {
-                let result = try await Network.shared.apollo.asyncUpload(
-                    operation: API.UploadPdfMutation(pdfFile: String(),
-                                                     filename: fileName),
-                    files: [pdfFile]
-                )
-
-                print(result)
-                let resulta = result.data?.private.uploadPdf
-                print(resulta)
-
-                // Handle success or failure
-            } catch {
-                print("Upload error: \(error.localizedDescription)")
-            }
-
-            isUploading = false
-        }
+//        Task {
+//            do {
+//                let result = try await Network.shared.apollo.asyncUpload(
+//                    operation: API.UploadPdfMutation(pdfFile: String(),
+//                                                     filename: fileName),
+//                    files: [pdfFile]
+//                )
+//
+//                print(result)
+//                let resulta = result.data?.private.uploadPdf
+//                print(resulta)
+//
+//                // Handle success or failure
+//            } catch {
+//                print("Upload error: \(error.localizedDescription)")
+//            }
+//
+//            isUploading = false
+//        }
     }
 }
 

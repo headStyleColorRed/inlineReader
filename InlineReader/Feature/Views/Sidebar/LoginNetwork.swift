@@ -47,11 +47,6 @@ class LoginNetwork: LoginNetworkProtocol {
     }
 
     func identifyUser(email: String) async throws -> Bool {
-        let query = API.IdentifyUserQuery(email: email)
-        let result = try await Network.shared.apollo.asyncFetch(query: query)
-        if let errors = result.errors {
-            throw errors.first?.localizedDescription.asError ?? NSError.unknownError
-        }
-        return result.data?.identifyUser ?? false
+        return false
     }
 }
