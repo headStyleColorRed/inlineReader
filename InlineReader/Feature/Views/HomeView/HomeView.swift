@@ -7,6 +7,8 @@
 
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
+import PDFKit
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
@@ -15,6 +17,7 @@ struct HomeView: View {
     @Query private var files: [File]
     @State private var gridColumns: [GridItem] = []
     @State private var readFile: File? = nil
+    @State private var isUploading = false
 
     var sortedFiles: [File] {
         files.sorted { file1, file2 in
@@ -103,6 +106,12 @@ struct HomeView: View {
                                 Label("Delete", systemImage: "trash")
                                     .foregroundStyle(Color.red)
                             }
+
+                            Button(action: {
+                                uploadPDF(file.fullURL, fileName: "")
+                            }) {
+                                Label("Upload PDF", systemImage: "arrow.up.doc")
+                            }
                         }
                     }
                 }
@@ -121,6 +130,14 @@ struct HomeView: View {
             TextReaderView(file: file)
                 .environmentObject(mainViewModel)
         }
+//        .overlay {
+//            if isUploading {
+//                ProgressView("Uploading PDF...")
+//                    .padding()
+//                    .background(.regularMaterial)
+//                    .cornerRadius(8)
+//            }
+//        }
     }
 
     private func updateGridColumns() {
@@ -130,6 +147,40 @@ struct HomeView: View {
         } else {
             // iPad layout
             gridColumns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 3)
+        }
+    }
+
+    private func uploadPDF(_ url: URL?, fileName: String) {
+        guard let url = url else {
+            return print("No file URL")
+        }
+
+        let document = PDFDocument(url: url)
+        guard let pdfFile = document?.asGraphQLFile(fieldName: "pdf_file",
+                                                    fileName: fileName) else {
+            return
+        }
+
+        isUploading = true
+
+        Task {
+            do {
+                let result = try await Network.shared.apollo.asyncUpload(
+                    operation: API.UploadPdfMutation(pdfFile: String(),
+                                                     filename: fileName),
+                    files: [pdfFile]
+                )
+
+                print(result)
+                let resulta = result.data?.private.uploadPdf
+                print(resulta)
+
+                // Handle success or failure
+            } catch {
+                print("Upload error: \(error.localizedDescription)")
+            }
+
+            isUploading = false
         }
     }
 }

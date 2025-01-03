@@ -156,7 +156,7 @@ struct SidebarView: View {
                 .environmentObject(viewModel)
         }
         .sheet(isPresented: $viewModel.isSignInSheetPresented) {
-            SignInView()
+            LoginView()
         }
         .onAppear {
             guard !files.isEmpty else { return }

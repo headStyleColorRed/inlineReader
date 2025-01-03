@@ -37,6 +37,7 @@ extension API {
       case "Private": return API.Objects.Private
       case "Query": return API.Objects.Query
       case "User": return API.Objects.User
+      case "UserFile": return API.Objects.UserFile
       default: return nil
       }
     }

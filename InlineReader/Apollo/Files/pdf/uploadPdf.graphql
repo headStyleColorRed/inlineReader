@@ -1,0 +1,10 @@
+mutation UploadPdf($pdfFile: Upload!, $filename: String!) {
+  private {
+    uploadPdf(name: $filename, pdfFile: $pdfFile) {
+        id
+        name
+        pdfUrl
+        createdAt
+    }
+  }
+}
