@@ -19,11 +19,6 @@ private extension Logger {
 public class LoggingInterceptor: ApolloInterceptor {
     public var id: String = "LoggingInterceptor"
 
-    private func shouldLogRequest<Operation: GraphQLOperation>(_ request: HTTPRequest<Operation>) -> Bool {
-        // You can customize this to filter which operations you want to log
-        return true
-    }
-
     public func interceptAsync<Operation: GraphQLOperation>(
         chain: RequestChain,
         request: HTTPRequest<Operation>,
@@ -48,23 +43,10 @@ public class LoggingInterceptor: ApolloInterceptor {
                                interceptor: self,
                                completion: { result in
 
-                // Log request/response/result
-                print("GQL1 \(request) - Variables: \(String(describing: request.operation.__variables))")
-                print("GQL2 \(String(describing: response))")
-                print("GQL3 \(result)")
-
                 // Log json response
-                if case let .success(data) = result, self.shouldLogRequest(request) {
+                if case let .success(data) = result {
                     self.printResponse(data.asJSONDictionary(), responses: true)
                 }
-
-                let resString = switch result {
-                case .success:
-                    "success"
-                case .failure:
-                    "failure"
-                }
-
                 completion(result)
             })
         }

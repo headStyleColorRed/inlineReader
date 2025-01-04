@@ -171,6 +171,9 @@ struct HomeView: View {
                     operation: API.UploadFileMutation(file: url.lastPathComponent),
                     files: files
                 )
+                if let errors = result.errors {
+                    throw errors.first?.localizedDescription.asError ?? NSError.unknownError
+                }
 
                 print(result)
                 let resulta = result.data?.private.uploadFile?.url
