@@ -12,79 +12,101 @@ import PDFKit
 import UIKit
 
 @Model
-final class File: CustomStringConvertible, Equatable {
-    var id: UUID
-    var name: String
-    var progress: Int
-    var dateAdded: Date
+final class File: CustomStringConvertible, Equatable, Mappable {
+    // Local properties
+    var localID: UUID?
+    var dateAdded: Date = Date()
     var lastOpened: Date?
-    var currentPage: Int
-    private var url: String
-    var settings: Settings
+    var currentPage: Int = 0
+    var settings = Settings()
     var annotations: [Annotation] = []
     var thumbnailData: Data?
-    var document: Document?
+    private var localUrl: String?
 
+    // Common properties
+    var name: String?
+
+    // Server properties
+    var serverId: String?
+    var serverUrl: String?
+    var blobId: String?
+    var contentType: String?
+    var byteSize: Int?
+    var checksum: String?
+
+    // Computed properties
     var fileType: UTType {
         guard let url = fullURL else { return .item }
         return url.fileType
     }
+    var fullURL: URL? {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory,
+                                                                in: .userDomainMask).first,
+              let localUrl else { return nil }
+        return documentsDirectory.appendingPathComponent(localUrl)
+    }
 
+    // Local initialiser
     init(url: URL, thumbNail: Data? = nil) {
-        self.id = UUID()
-        self.progress = 0
-        self.dateAdded = Date()
-        self.currentPage = 0
+        self.localID = UUID()
         // The url Will only be the last path component since we are in the documents directory
-        self.url = url.lastPathComponent
+        self.localUrl = url.lastPathComponent
         // The name will be the last path component without the extension
         self.name = url.lastPathComponent.replacingOccurrences(of: ".\(url.pathExtension)", with: "")
         self.settings = Settings()
         self.thumbnailData = thumbNail
     }
 
-
+    //Server initialiser
     init(from document: Document) {
-        self.id = UUID()
-        self.name = document.name ?? ""
-        self.url = document.url ?? ""
-        self.progress = 0
-        self.dateAdded = Date()
-        self.currentPage = 0
-        self.settings = Settings()
-        self.thumbnailData = nil
-        self.document = document
+        self.serverId = document.id
+        self.serverUrl = document.url
+        self.blobId = document.blobId
+        self.contentType = document.contentType
+        self.byteSize = document.byteSize
+        self.checksum = document.checksum
     }
 
+    // Mappable methods
+    required init(map: Map) {}
+
+    func mapping(map: Map) {
+        serverId <- map["id"]
+        serverUrl <- map["url"]
+        blobId <- map["blobId"]
+        contentType <- map["contentType"]
+        byteSize <- map["byteSize"]
+        checksum <- map["checksum"]
+    }
+
+    // Common methods
     func updateLastOpened() {
         self.lastOpened = Date()
+    }
+
+    func updateWith(document: Document) {
+        self.serverId = document.id
+        self.serverUrl = document.url
+        self.blobId = document.blobId
+        self.contentType = document.contentType
+        self.byteSize = document.byteSize
+        self.checksum = document.checksum
     }
 
     var description: String {
         return """
         {
-            name: \(name),
-            url: \(url),
-            progress: \(progress),
-            dateAdded: \(dateAdded),
-            lastOpened: \(lastOpened?.asStringWith(format: .userFacingOnlyDate) ?? "Never opened"),
-            currentPage: \(currentPage)
+            name: \(name ?? "Unknown"),
+            serverId: \(serverId ?? "Unknown"),
+            serverUrl: \(serverUrl ?? "Unknown"),
+            blobId: \(blobId ?? "Unknown"),
+            url: \(localUrl ?? "Unknown"),
         }
         """
     }
 
     static func == (lhs: File, rhs: File) -> Bool {
-        return lhs.url == rhs.url
-    }
-}
-
-// MARK: - File operations
-extension File {
-    var fullURL: URL? {
-        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            return nil
-        }
-        return documentsDirectory.appendingPathComponent(url)
+        return lhs.localUrl == rhs.localUrl
     }
 }
 

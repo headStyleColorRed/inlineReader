@@ -72,7 +72,7 @@ struct HomeView: View {
                                     .padding(5)
 
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(file.name)
+                                    Text(file.name ?? "")
                                         .font(.headline)
                                         .lineLimit(2)
                                         .foregroundColor(.primary)
@@ -101,7 +101,7 @@ struct HomeView: View {
                             }) {
                                 Label("Upload PDF", systemImage: "arrow.up.doc")
                             }
-//
+
                             Button(action: {
                                 convertFileToTxt(file: file)
                             }) {
@@ -133,7 +133,7 @@ struct HomeView: View {
                 .environmentObject(mainViewModel)
         }
 //        .overlay {
-//            if isUploading {
+//            if viewModel.isUploading {
 //                ProgressView("Uploading PDF...")
 //                    .padding()
 //                    .background(.regularMaterial)
@@ -155,8 +155,8 @@ struct HomeView: View {
     private func uploadFile(file: File) {
         Task {
             let document = await viewModel.uploadPDF(file: file)
-            guard let file = files.first(where: { $0.id == file.id }) else { return }
-            file.document = document
+            guard let document, let file = files.first(where: { $0.id == file.id }) else { return }
+            file.updateWith(document: document)
             do {
                 try modelContext.save()
             } catch {
@@ -167,7 +167,7 @@ struct HomeView: View {
     }
 
     private func convertFileToTxt(file: File) {
-        guard file.document != nil else {
+        guard file.serverId != nil else {
             BannerManager.showError(message: "Please upload the PDF first")
             return
         }
@@ -179,7 +179,7 @@ struct HomeView: View {
 
         Task {
             do {
-                guard let documentId = file.document?.id else {
+                guard let documentId = file.serverId else {
                     throw "Please upload the PDF first, could not find documentId"
                 }
                 try await viewModel.network.deleteFile(id: documentId)

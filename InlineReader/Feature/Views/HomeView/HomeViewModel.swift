@@ -41,7 +41,7 @@ class HomeViewModel: ObservableObject {
             let document = try await network.uploadPDF(url: url, files: files)
 
             // Update the current file with the server configuration
-            BannerManager.showSuccess(message: "File \(document.name) uploaded successfully")
+            BannerManager.showSuccess(message: "File \(document.name ?? "") uploaded successfully")
             isUploading = false
             return document
         } catch {
@@ -58,7 +58,7 @@ class HomeViewModel: ObservableObject {
 
         Task {
             do {
-                guard let blobId = file.document?.blobId else {
+                guard let blobId = file.blobId else {
                     throw "Please upload the PDF first, could not find blobId"
                 }
                 let document = try await network.convertFileToTxt(id: blobId)

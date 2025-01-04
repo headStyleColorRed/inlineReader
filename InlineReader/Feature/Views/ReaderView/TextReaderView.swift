@@ -55,7 +55,7 @@ struct TextReaderView: View {
                 }
                 .presentationDetents([.medium])
             }
-            .navigationTitle(viewModel.file.name)
+            .navigationTitle(viewModel.file.name ?? "Text Reader")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
