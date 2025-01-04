@@ -4,26 +4,26 @@
 @_exported import ApolloAPI
 
 extension API {
-  class UploadFileMutation: GraphQLMutation {
-    static let operationName: String = "UploadFile"
+  class GetFileAsTxtQuery: GraphQLQuery {
+    static let operationName: String = "GetFileAsTxt"
     static let operationDocument: ApolloAPI.OperationDocument = .init(
       definition: .init(
-        #"mutation UploadFile($file: Upload!) { private { __typename uploadFile(file: $file) { __typename id name url blobId contentType byteSize checksum } } }"#
+        #"query GetFileAsTxt($id: ID!) { private { __typename getFileAsTxt(id: $id) { __typename id name url blobId contentType byteSize checksum } } }"#
       ))
 
-    public var file: Upload
+    public var id: ID
 
-    public init(file: Upload) {
-      self.file = file
+    public init(id: ID) {
+      self.id = id
     }
 
-    public var __variables: Variables? { ["file": file] }
+    public var __variables: Variables? { ["id": id] }
 
     struct Data: API.SelectionSet {
       let __data: DataDict
       init(_dataDict: DataDict) { __data = _dataDict }
 
-      static var __parentType: any ApolloAPI.ParentType { API.Objects.Mutation }
+      static var __parentType: any ApolloAPI.ParentType { API.Objects.Query }
       static var __selections: [ApolloAPI.Selection] { [
         .field("private", Private.self),
       ] }
@@ -32,23 +32,23 @@ extension API {
 
       /// Private
       ///
-      /// Parent Type: `PrivateMutations`
+      /// Parent Type: `PrivateQueries`
       struct Private: API.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { API.Objects.PrivateMutations }
+        static var __parentType: any ApolloAPI.ParentType { API.Objects.PrivateQueries }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
-          .field("uploadFile", UploadFile.self, arguments: ["file": .variable("file")]),
+          .field("getFileAsTxt", GetFileAsTxt.self, arguments: ["id": .variable("id")]),
         ] }
 
-        var uploadFile: UploadFile { __data["uploadFile"] }
+        var getFileAsTxt: GetFileAsTxt { __data["getFileAsTxt"] }
 
-        /// Private.UploadFile
+        /// Private.GetFileAsTxt
         ///
         /// Parent Type: `Document`
-        struct UploadFile: API.SelectionSet {
+        struct GetFileAsTxt: API.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 

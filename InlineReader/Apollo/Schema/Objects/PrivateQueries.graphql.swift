@@ -4,8 +4,8 @@
 import ApolloAPI
 
 extension API.Objects {
-  static let Private = ApolloAPI.Object(
-    typename: "Private",
+  static let PrivateQueries = ApolloAPI.Object(
+    typename: "PrivateQueries",
     implementedInterfaces: []
   )
 }

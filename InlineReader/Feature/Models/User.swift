@@ -21,4 +21,3 @@ struct User: Mappable {
         role <- map["role"]
     }
 }
-

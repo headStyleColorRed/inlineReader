@@ -27,12 +27,12 @@ extension API {
 
       /// Private
       ///
-      /// Parent Type: `Private`
+      /// Parent Type: `PrivateQueries`
       struct Private: API.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { API.Objects.Private }
+        static var __parentType: any ApolloAPI.ParentType { API.Objects.PrivateQueries }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("currentUser", CurrentUser?.self),

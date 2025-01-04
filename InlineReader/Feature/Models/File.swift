@@ -23,6 +23,7 @@ final class File: CustomStringConvertible, Equatable {
     var settings: Settings
     var annotations: [Annotation] = []
     var thumbnailData: Data?
+    var document: Document?
 
     var fileType: UTType {
         guard let url = fullURL else { return .item }
@@ -102,5 +103,30 @@ class Annotation {
         self.text = text
         self._location = range.location
         self._range = range.length
+    }
+}
+
+
+import ObjectMapper
+@Model
+class Document: Mappable {
+    var id: Int?
+    var name: String?
+    var url: String?
+    var blobId: String?
+    var contentType: String?
+    var byteSize: Int?
+    var checksum: String?
+
+    required init(map: Map) {}
+
+    func mapping(map: Map) {
+        id <- map["id"]
+        name <- map["name"]
+        url <- map["url"]
+        blobId <- map["blobId"]
+        contentType <- map["contentType"]
+        byteSize <- map["byteSize"]
+        checksum <- map["checksum"]
     }
 }

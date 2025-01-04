@@ -95,16 +95,6 @@ struct HomeView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .contextMenu {
-                            Button(action: {
-                                if let url = file.fullURL {
-                                    try? FileManager.default.removeItem(at: url)
-                                }
-                                modelContext.delete(file)
-                                try? modelContext.save()
-                            }) {
-                                Label("Delete", systemImage: "trash")
-                                    .foregroundStyle(Color.red)
-                            }
 
                             Button(action: {
                                 uploadFile(file: file)
@@ -116,6 +106,16 @@ struct HomeView: View {
                                 convertFileToTxt(file: file)
                             }) {
                                 Label("Convert to txt", systemImage: "document.viewfinder.fill")
+                            }
+
+                            Button(role: .destructive) {
+                                if let url = file.fullURL {
+                                    try? FileManager.default.removeItem(at: url)
+                                }
+                                modelContext.delete(file)
+                                try? modelContext.save()
+                            } label: {
+                                Label("Delete", systemImage: "trash")
                             }
                         }
                     }
@@ -156,10 +156,24 @@ struct HomeView: View {
     }
 
     private func uploadFile(file: File) {
-        viewModel.uploadPDF(file: file)
+        Task {
+            let document = await viewModel.uploadPDF(file: file)
+            guard let file = files.first(where: { $0.id == file.id }) else { return }
+            file.document = document
+            do {
+                try modelContext.save()
+            } catch {
+                BannerManager.showError(message: error.localizedDescription)
+                print("Save error: \(error.localizedDescription)")
+            }
+        }
     }
 
     private func convertFileToTxt(file: File) {
+        guard file.document != nil else {
+            BannerManager.showError(message: "Please upload the PDF first")
+            return
+        }
         viewModel.convertFileToTxt(file: file)
     }
 }

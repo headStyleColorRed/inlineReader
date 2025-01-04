@@ -1,6 +1,6 @@
-mutation UploadFile($file: Upload!) {
+query GetFileAsTxt($id: ID!) {
 	private {
-		uploadFile(file: $file) {
+		getFileAsTxt(id: $id) {
 			id
 			name
 			url
