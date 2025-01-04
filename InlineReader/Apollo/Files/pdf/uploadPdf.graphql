@@ -1,9 +1,7 @@
-mutation RetrieveUsers($file: Upload!) {
+mutation UploadFile($file: Upload!) {
 	private {
 		uploadFile(file: $file) {
-			user {
-				files
-			}
+			url 
 		}
 	}
 }

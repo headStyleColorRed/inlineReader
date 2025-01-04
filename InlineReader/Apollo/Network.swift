@@ -39,8 +39,9 @@ public class NetworkInterceptorProvider: DefaultInterceptorProvider {
         }
         myInterceptors.append(MaxRetryInterceptor(maxRetriesAllowed: 20))
 
-        // Add Custom interceptors
-        myInterceptors.insert(CookieInterceptor(), at: 0)
+        // Add JWT Authentication interceptor
+        myInterceptors.insert(JWTAuthenticationInterceptor(), at: 0)
+        myInterceptors.insert(LoggingInterceptor(), at: 1)
 
         return myInterceptors
     }

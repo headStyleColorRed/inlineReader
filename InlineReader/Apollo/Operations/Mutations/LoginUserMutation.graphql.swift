@@ -8,7 +8,7 @@ extension API {
     static let operationName: String = "LoginUser"
     static let operationDocument: ApolloAPI.OperationDocument = .init(
       definition: .init(
-        #"mutation LoginUser($email: String!, $password: String!) { loginUser(email: $email, password: $password) { __typename user { __typename id email role name age } errors } }"#
+        #"mutation LoginUser($email: String!, $password: String!) { loginUser(email: $email, password: $password) { __typename token user { __typename id email role name age } errors } }"#
       ))
 
     public var email: String
@@ -51,10 +51,12 @@ extension API {
         static var __parentType: any ApolloAPI.ParentType { API.Objects.LoginUserPayload }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
+          .field("token", String?.self),
           .field("user", User?.self),
           .field("errors", [String].self),
         ] }
 
+        var token: String? { __data["token"] }
         var user: User? { __data["user"] }
         var errors: [String] { __data["errors"] }
 

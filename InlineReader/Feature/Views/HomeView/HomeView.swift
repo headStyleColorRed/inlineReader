@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 import PDFKit
+import Apollo
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
@@ -151,37 +152,37 @@ struct HomeView: View {
     }
 
     private func uploadPDF(_ url: URL?, fileName: String) {
+        var files: [GraphQLFile] = Array.init()
+
         guard let url = url else {
             return print("No file URL")
         }
 
         let document = PDFDocument(url: url)
-        guard let pdfFile = document?.asGraphQLFile(fieldName: "pdf_file",
-                                                    fileName: fileName) else {
-            return
-        }
+        guard let pdfFile = document?.asGraphQLFile(fieldName: "file", fileName: url.lastPathComponent) else { return }
 
         isUploading = true
 
-//        Task {
-//            do {
-//                let result = try await Network.shared.apollo.asyncUpload(
-//                    operation: API.UploadPdfMutation(pdfFile: String(),
-//                                                     filename: fileName),
-//                    files: [pdfFile]
-//                )
-//
-//                print(result)
-//                let resulta = result.data?.private.uploadPdf
-//                print(resulta)
-//
-//                // Handle success or failure
-//            } catch {
-//                print("Upload error: \(error.localizedDescription)")
-//            }
-//
-//            isUploading = false
-//        }
+        files.append(pdfFile)
+
+        Task {
+            do {
+                let result = try await Network.shared.apollo.asyncUpload(
+                    operation: API.UploadFileMutation(file: url.lastPathComponent),
+                    files: files
+                )
+
+                print(result)
+                let resulta = result.data?.private.uploadFile?.url
+                print(resulta)
+
+                // Handle success or failure
+            } catch {
+                print("Upload error: \(error.localizedDescription)")
+            }
+
+            isUploading = false
+        }
     }
 }
 

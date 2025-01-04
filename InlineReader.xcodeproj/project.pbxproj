@@ -38,9 +38,6 @@
 		5B1824702D1B115000600BB6 /* Exceptions for "InlineReader" folder in "InlineReader" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Apollo/Operations/Mutations/LogoutUserMutation.graphql.swift,
-				Apollo/Operations/Mutations/UploadPdfMutation.graphql.swift,
-				Apollo/Operations/Queries/IdentifyUserQuery.graphql.swift,
 				Info.plist,
 			);
 			target = 5B4E4C022D19B0BB00F9D33D /* InlineReader */;

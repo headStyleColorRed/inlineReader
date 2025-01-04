@@ -32,6 +32,12 @@ class LoginNetwork: LoginNetworkProtocol {
         if let error = result.errors?.first {
             throw error.localizedDescription.asError
         }
+
+        // Store the JWT token if received
+        if let token = result.data?.loginUser?.token {
+            TokenManager.storeToken(token)
+        }
+
         guard let user = result.data?.loginUser?.user?.mapped(User.self) else { throw NSError.parsingError }
         return user
     }
