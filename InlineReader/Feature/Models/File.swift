@@ -43,6 +43,19 @@ final class File: CustomStringConvertible, Equatable {
         self.thumbnailData = thumbNail
     }
 
+
+    init(from document: Document) {
+        self.id = UUID()
+        self.name = document.name ?? ""
+        self.url = document.url ?? ""
+        self.progress = 0
+        self.dateAdded = Date()
+        self.currentPage = 0
+        self.settings = Settings()
+        self.thumbnailData = nil
+        self.document = document
+    }
+
     func updateLastOpened() {
         self.lastOpened = Date()
     }
@@ -110,7 +123,7 @@ class Annotation {
 import ObjectMapper
 @Model
 class Document: Mappable {
-    var id: Int?
+    var id: String?
     var name: String?
     var url: String?
     var blobId: String?

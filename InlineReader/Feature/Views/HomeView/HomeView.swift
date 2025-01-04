@@ -109,11 +109,7 @@ struct HomeView: View {
                             }
 
                             Button(role: .destructive) {
-                                if let url = file.fullURL {
-                                    try? FileManager.default.removeItem(at: url)
-                                }
-                                modelContext.delete(file)
-                                try? modelContext.save()
+                                deleteFile(file: file)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
@@ -127,6 +123,7 @@ struct HomeView: View {
         .onAppear {
             mainViewModel.columnVisibility = .all
             updateGridColumns()
+            viewModel.viewDelegate = self
         }
         .onChange(of: horizontalSizeClass) {
             updateGridColumns()
@@ -175,6 +172,38 @@ struct HomeView: View {
             return
         }
         viewModel.convertFileToTxt(file: file)
+    }
+
+    private func deleteFile(file: File) {
+        modelContext.delete(file)
+
+        Task {
+            do {
+                guard let documentId = file.document?.id else {
+                    throw "Please upload the PDF first, could not find documentId"
+                }
+                try await viewModel.network.deleteFile(id: documentId)
+                try modelContext.save()
+            } catch {
+                BannerManager.showError(message: error.localizedDescription)
+                print("Delete error: \(error.localizedDescription)")
+
+                modelContext.rollback()
+            }
+        }
+    }
+}
+
+extension HomeView: HomeViewModelToView {
+    func createNewFileFrom(document: Document) {
+        do {
+            let file = File(from: document)
+            modelContext.insert(file)
+            try modelContext.save()
+        } catch {
+            BannerManager.showError(message: error.localizedDescription)
+            print("Create new file error: \(error.localizedDescription)")
+        }
     }
 }
 

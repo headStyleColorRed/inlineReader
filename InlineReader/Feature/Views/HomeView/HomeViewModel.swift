@@ -9,16 +9,17 @@ import Foundation
 import Apollo
 import PDFKit
 
+protocol HomeViewModelToView {
+    func createNewFileFrom(document: Document)
+}
+
 @MainActor
 class HomeViewModel: ObservableObject {
     @Published var isUploading = false
     @Published var isConverting = false
 
-    private var network: HomeNetworkProtocol
-
-    init(network: HomeNetworkProtocol? = nil) {
-        self.network = network ?? HomeNetwork()
-    }
+    var network: HomeNetworkProtocol = HomeNetwork()
+    var viewDelegate: HomeViewModelToView?
 
     func uploadPDF(file: File) async -> Document? {
         var files: [GraphQLFile] = Array.init()
@@ -62,6 +63,7 @@ class HomeViewModel: ObservableObject {
                 }
                 let document = try await network.convertFileToTxt(id: blobId)
                 BannerManager.showSuccess(message: "File \(document.name ?? "") converted to txt successfully")
+                viewDelegate?.createNewFileFrom(document: document)
             } catch {
                 BannerManager.showError(message: error.localizedDescription)
                 print("Convert error: \(error.localizedDescription)")

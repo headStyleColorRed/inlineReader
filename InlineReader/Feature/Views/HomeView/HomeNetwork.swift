@@ -11,6 +11,7 @@ import Apollo
 protocol HomeNetworkProtocol {
     func uploadPDF(url: URL, files: [GraphQLFile]) async throws -> Document
     func convertFileToTxt(id: String) async throws -> Document
+    func deleteFile(id: String) async throws
 }
 
 class HomeNetwork: HomeNetworkProtocol {
@@ -31,5 +32,12 @@ class HomeNetwork: HomeNetworkProtocol {
         let result = try await Network.shared.apollo.asyncFetch(query: API.GetFileAsTxtQuery(id: id))
         guard let document = result.data?.private.getFileAsTxt.mapped(Document.self) else { throw NSError.parsingError }
         return document
+    }
+
+    func deleteFile(id: String) async throws {
+        let result = try await Network.shared.apollo.asyncPerform(mutation: API.DeleteFileMutation(id: id))
+        if let errors = result.errors {
+            throw errors.first?.localizedDescription.asError ?? NSError.unknownError
+        }
     }
 }
