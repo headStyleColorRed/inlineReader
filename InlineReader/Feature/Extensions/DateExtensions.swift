@@ -207,7 +207,7 @@ public extension Date {
 
     func endOfWeek(usingFirstWeekday firstWeekday: Int? = nil) -> Date {
         let startOfTheWeek = startOfWeek(usingFirstWeekday: firstWeekday)
-        var calendar = Calendar.current
+        let calendar = Calendar.current
         let nextDay = calendar.date(byAdding: .day, value: 7, to: startOfTheWeek)! // Next week start day at 00:00:00
         return calendar.date(byAdding: .second, value: -1, to: nextDay)! // End of week day at 23:59:59
     }

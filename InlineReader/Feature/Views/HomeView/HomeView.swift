@@ -8,17 +8,15 @@
 import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
-import PDFKit
-import Apollo
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var mainViewModel: SidebarViewModel
+    @StateObject var viewModel = HomeViewModel()
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Query private var files: [File]
     @State private var gridColumns: [GridItem] = []
     @State private var readFile: File? = nil
-    @State private var isUploading = false
 
     var sortedFiles: [File] {
         files.sorted { file1, file2 in
@@ -45,9 +43,9 @@ struct HomeView: View {
             } else {
                 LazyVGrid(columns: gridColumns, spacing: 16) {
                     ForEach(sortedFiles) { file in
-                        Button(action: {
+                        Button {
                             readFile = file
-                        }) {
+                        } label: {
                             VStack {
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(Color(UIColor.systemBackground))
@@ -109,9 +107,15 @@ struct HomeView: View {
                             }
 
                             Button(action: {
-                                uploadPDF(file.fullURL, fileName: "")
+                                uploadFile(file: file)
                             }) {
                                 Label("Upload PDF", systemImage: "arrow.up.doc")
+                            }
+//
+                            Button(action: {
+                                convertFileToTxt(file: file)
+                            }) {
+                                Label("Convert to txt", systemImage: "document.viewfinder.fill")
                             }
                         }
                     }
@@ -151,42 +155,12 @@ struct HomeView: View {
         }
     }
 
-    private func uploadPDF(_ url: URL?, fileName: String) {
-        var files: [GraphQLFile] = Array.init()
+    private func uploadFile(file: File) {
+        viewModel.uploadPDF(file: file)
+    }
 
-        guard let url = url else {
-            return print("No file URL")
-        }
-
-        let document = PDFDocument(url: url)
-        guard let pdfFile = document?.asGraphQLFile(fieldName: "file", fileName: url.lastPathComponent) else { return }
-
-        isUploading = true
-
-        files.append(pdfFile)
-
-        Task {
-            do {
-                let result = try await Network.shared.apollo.asyncUpload(
-                    operation: API.UploadFileMutation(file: url.lastPathComponent),
-                    files: files
-                )
-                if let errors = result.errors {
-                    throw errors.first?.localizedDescription.asError ?? NSError.unknownError
-                }
-
-                print(result)
-                let resulta = result.data?.private.uploadFile?.url
-                print(resulta)
-
-                // Handle success or failure
-            } catch {
-                BannerManager.showError(message: error.localizedDescription)
-                print("Upload error: \(error.localizedDescription)")
-            }
-
-            isUploading = false
-        }
+    private func convertFileToTxt(file: File) {
+        viewModel.convertFileToTxt(file: file)
     }
 }
 
