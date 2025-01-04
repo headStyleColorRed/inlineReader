@@ -49,6 +49,7 @@ class LoginViewModel: ObservableObject {
                 print(error.localizedDescription)
                 DispatchQueue.main.async {
                     self.isLoading = false
+                    BannerManager.showError(message: "Login failed: \(error.localizedDescription)")
                 }
             }
         }
@@ -73,6 +74,7 @@ class LoginViewModel: ObservableObject {
                 print(error.localizedDescription)
                 DispatchQueue.main.async {
                     self.isLoading = false
+                    BannerManager.showError(message: "Account creation failed: \(error.localizedDescription)")
                 }
             }
         }

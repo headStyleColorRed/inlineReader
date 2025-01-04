@@ -178,6 +178,7 @@ struct HomeView: View {
 
                 // Handle success or failure
             } catch {
+                BannerManager.showError(message: error.localizedDescription)
                 print("Upload error: \(error.localizedDescription)")
             }
 
