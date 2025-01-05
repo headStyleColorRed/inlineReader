@@ -116,14 +116,6 @@ struct HomeView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .contextMenu {
-                            if canUploadFile(file: file) {
-                                Button(action: {
-                                    uploadFile(file: file)
-                                }) {
-                                    Label("Upload PDF", systemImage: "arrow.up.doc")
-                                }
-                            }
-
                             if canConvertFileToTxt(file: file) {
                                 Button(action: {
                                     convertFileToTxt(file: file)
@@ -171,7 +163,7 @@ struct HomeView: View {
                 message: Text("The chosen file type isn't supported. Would you like to upload it to the server for conversion?"),
                 primaryButton: .default(Text("Convert file")) {
                     if let file = selectedFile {
-                        uploadFile(file: file)
+                        convertFileToTxt(file: file)
                     }
                 },
                 secondaryButton: .cancel()
@@ -204,10 +196,6 @@ struct HomeView: View {
     }
 
     private func convertFileToTxt(file: File) {
-        guard file.serverId != nil else {
-            BannerManager.showError(message: "Please upload the PDF first")
-            return
-        }
         viewModel.convertFileToTxt(file: file)
     }
 
@@ -272,7 +260,7 @@ struct HomeView: View {
         let txtFile = files.first(where: {
             $0.name == file.name && $0.fullURL?.fileType == .text
         })
-        return file.serverId != nil && contentType == .pdf && txtFile == nil
+        return contentType == .pdf && txtFile == nil
     }
 
     func fileName(file: File) -> String {
