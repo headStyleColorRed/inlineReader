@@ -68,22 +68,15 @@ struct HomeView: View {
                                                     .padding(20)
                                             }
                                         }
-                                            .if(file.serverId == nil) {
-                                                $0.overlay(
-                                                    LinearGradient(
-                                                        gradient: Gradient(colors: [Color.clear, Color.white]),
-                                                        startPoint: .top,
-                                                        endPoint: .bottom
-                                                    )
-                                                    .opacity(0.8)
-                                                )
-                                                .overlay(alignment: .bottomTrailing) {
+                                            .if(file.serverId == nil) { view in
+                                                view.overlay(alignment: .bottom) {
                                                     HStack {
-                                                        Image(systemName: "icloud.fill")
-                                                            .font(.system(size: 20))
-                                                            .foregroundColor(.gray)
+                                                        Text("\(file.urlExtension)")
+                                                            .bold()
+                                                            .font(.system(size: 12))
                                                     }
-                                                    .padding(8)
+                                                    .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                                                    .opacity(0.4)
                                                 }
                                             }
                                     )

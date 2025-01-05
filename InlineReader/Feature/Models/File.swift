@@ -45,6 +45,9 @@ final class File: CustomStringConvertible, Equatable, Mappable {
               let localUrl else { return nil }
         return documentsDirectory.appendingPathComponent(localUrl)
     }
+    var urlExtension: String {
+        return fullURL?.pathExtension.components(separatedBy: ".").last ?? ""
+    }
 
     // Local initialiser
     init(url: URL, thumbNail: Data? = nil) {
