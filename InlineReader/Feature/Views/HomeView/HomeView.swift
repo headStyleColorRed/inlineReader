@@ -11,10 +11,10 @@ import UniformTypeIdentifiers
 
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
+    @Query private var files: [File]
     @EnvironmentObject var mainViewModel: SidebarViewModel
     @StateObject var viewModel = HomeViewModel()
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    @Query private var files: [File]
     @State private var gridColumns: [GridItem] = []
     @State private var readFile: File? = nil
 
@@ -66,6 +66,22 @@ struct HomeView: View {
                                                     .padding(20)
                                             }
                                         }
+                                            .overlay(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [Color.clear, Color.white]),
+                                                    startPoint: .top,
+                                                    endPoint: .bottom
+                                                )
+                                                .opacity(0.8)
+                                            )
+                                            .overlay(alignment: .bottomTrailing) {
+                                                HStack {
+                                                    Image(systemName: "icloud.fill")
+                                                        .font(.system(size: 20))
+                                                        .foregroundColor(.gray)
+                                                }
+                                                .padding(8)
+                                            }
                                     )
                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                                     .shadow(radius: 4)
@@ -259,9 +275,4 @@ extension HomeView: HomeViewModelToView {
             print("Append file error: \(error.localizedDescription)")
         }
     }
-}
-
-#Preview(traits: .landscapeLeft) {
-    SidebarView()
-        .modelContainer(for: File.self, inMemory: true)
 }
