@@ -291,6 +291,7 @@ extension HomeView: HomeViewModelToView {
         do {
             modelContext.insert(file)
             try modelContext.save()
+            selectedFileType = .text
         } catch {
             BannerManager.showError(message: error.localizedDescription)
             print("Append file error: \(error.localizedDescription)")
