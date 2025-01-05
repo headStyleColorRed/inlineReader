@@ -17,6 +17,8 @@ struct HomeView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State private var gridColumns: [GridItem] = []
     @State private var readFile: File? = nil
+    @State private var showAlert = false
+    @State private var selectedFile: File?
 
     var sortedFiles: [File] {
         files.sorted { file1, file2 in
@@ -46,7 +48,13 @@ struct HomeView: View {
                 LazyVGrid(columns: gridColumns, spacing: 16) {
                     ForEach(sortedFiles) { file in
                         Button {
-                            readFile = file
+                            if file.fullURL?.fileType == .text {
+                                readFile = file
+                            } else {
+                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                selectedFile = file
+                                showAlert = true
+                            }
                         } label: {
                             VStack {
                                 RoundedRectangle(cornerRadius: 8)
@@ -156,6 +164,18 @@ struct HomeView: View {
                     .cornerRadius(8)
                     .animation(.easeInOut(duration: 0.5), value: viewModel.isUploading || viewModel.isConverting)
             }
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Unsupported File Type"),
+                message: Text("The chosen file type isn't supported. Would you like to upload it to the server for conversion?"),
+                primaryButton: .default(Text("Convert file")) {
+                    if let file = selectedFile {
+                        uploadFile(file: file)
+                    }
+                },
+                secondaryButton: .cancel()
+            )
         }
     }
 
