@@ -18,17 +18,10 @@ struct HomeView: View {
     @State private var gridColumns: [GridItem] = []
     @State private var readFile: File? = nil
     @State private var showAlert = false
-    @State private var selectedFile: File?
-    @State private var selectedFileType: FileType = .text
 
-    var filteredFiles: [File] {
-        files.filter { file in
-            return file.fullURL?.fileType == selectedFileType.asUTType
-        }
-    }
 
     var sortedFiles: [File] {
-        filteredFiles.sorted { file1, file2 in
+        files.sorted { file1, file2 in
             switch (file1.lastOpened, file2.lastOpened) {
             case (let date1?, let date2?):
                 return date1 > date2
@@ -43,117 +36,99 @@ struct HomeView: View {
     }
 
     var body: some View {
-        VStack {
-            HStack {
-                Picker("File Type", selection: $selectedFileType) {
-                    ForEach(FileType.allCases) { type in
-                        Text(type.rawValue).tag(type)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-            }
-
-            ScrollView {
-                if files.isEmpty {
-                    Spacer()
-                    Text("No files available, import a TXT or PDF file to get started")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                        .padding()
-                    Spacer()
-                } else {
-                    LazyVGrid(columns: gridColumns, spacing: 16) {
-                        ForEach(sortedFiles) { file in
-                            Button {
-                                if file.fullURL?.fileType == .text {
-                                    readFile = file
-                                } else {
-                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                    selectedFile = file
-                                    showAlert = true
-                                }
-                            } label: {
-                                VStack {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(Color(UIColor.systemBackground))
-                                        .aspectRatio(3/4, contentMode: .fit)
-                                        .overlay(
-                                            Group {
-                                                if let thumbnailData = file.thumbnailData,
-                                                   let uiImage = UIImage(data: thumbnailData) {
-                                                    Image(uiImage: uiImage)
-                                                        .resizable()
-                                                        .scaledToFill()
-                                                        .clipped()
-                                                } else {
-                                                    Image(systemName: "doc.text.fill")
-                                                        .resizable()
-                                                        .scaledToFit()
-                                                        .foregroundColor(.accentColor)
-                                                        .padding(20)
-                                                }
-                                            }.overlay(alignment: .bottom) {
-                                                HStack {
-                                                    Text("\(file.urlExtension)")
-                                                        .bold()
-                                                        .font(.system(size: 12))
-                                                }
-                                                .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
-                                                .opacity(0.4)
+        ScrollView {
+            if files.isEmpty {
+                Spacer()
+                Text("No files available, import a TXT or PDF file to get started")
+                    .font(.headline)
+                    .foregroundColor(.secondary)
+                    .padding()
+                Spacer()
+            } else {
+                LazyVGrid(columns: gridColumns, spacing: 16) {
+                    ForEach(sortedFiles) { file in
+                        Button {
+                            readFile = file
+                        } label: {
+                            VStack {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color(UIColor.systemBackground))
+                                    .aspectRatio(3/4, contentMode: .fit)
+                                    .overlay(
+                                        Group {
+                                            if let thumbnailData = file.thumbnailData,
+                                               let uiImage = UIImage(data: thumbnailData) {
+                                                Image(uiImage: uiImage)
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .clipped()
+                                            } else {
+                                                Image(systemName: "doc.text.fill")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .foregroundColor(.accentColor)
+                                                    .padding(20)
                                             }
-                                        )
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .shadow(radius: 4)
-                                        .padding(5)
+                                        }.overlay(alignment: .bottom) {
+                                            HStack {
+                                                Text("\(file.urlExtension)")
+                                                    .bold()
+                                                    .font(.system(size: 12))
+                                            }
+                                            .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                                            .opacity(0.4)
+                                        }
+                                    )
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .shadow(radius: 4)
+                                    .padding(5)
 
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(fileName(file: file))
-                                            .font(.headline)
-                                            .lineLimit(2)
-                                            .foregroundColor(.primary)
-                                        if let lastOpened = file.lastOpened {
-                                            Text(lastOpened.formatted(date: .abbreviated, time: .shortened))
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(fileName(file: file))
+                                        .font(.headline)
+                                        .lineLimit(2)
+                                        .foregroundColor(.primary)
+                                    if let lastOpened = file.lastOpened {
+                                        Text(lastOpened.formatted(date: .abbreviated, time: .shortened))
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    } else {
+                                        HStack {
+                                            Circle()
+                                                .fill(Color.blue)
+                                                .frame(width: 8, height: 8)
+                                            Text("Never opened")
                                                 .font(.caption)
                                                 .foregroundColor(.secondary)
-                                        } else {
-                                            HStack {
-                                                Circle()
-                                                    .fill(Color.blue)
-                                                    .frame(width: 8, height: 8)
-                                                Text("Never opened")
-                                                    .font(.caption)
-                                                    .foregroundColor(.secondary)
-                                            }
                                         }
                                     }
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.horizontal, 8)
-                                    Spacer()
                                 }
-                                .cornerRadius(12)
-                                .padding(.vertical, 4)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 8)
+                                Spacer()
                             }
-                            .buttonStyle(PlainButtonStyle())
-                            .contextMenu {
-                                if canConvertFileToTxt(file: file) {
-                                    Button(action: {
-                                        convertFileToTxt(file: file)
-                                    }) {
-                                        Label("Convert to txt", systemImage: "document.viewfinder.fill")
-                                    }
+                            .cornerRadius(12)
+                            .padding(.vertical, 4)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .contextMenu {
+                            if canConvertFileToTxt(file: file) {
+                                Button(action: {
+                                    convertFileToTxt(file: file)
+                                }) {
+                                    Label("Convert to txt", systemImage: "document.viewfinder.fill")
                                 }
+                            }
 
-                                Button(role: .destructive) {
-                                    deleteFile(file: file)
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
+                            Button(role: .destructive) {
+                                deleteFile(file: file)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
                             }
                         }
                     }
-                    .padding()
                 }
+                .padding()
             }
         }
         .navigationTitle("Library")
@@ -177,18 +152,6 @@ struct HomeView: View {
                     .cornerRadius(8)
                     .animation(.easeInOut(duration: 0.5), value: viewModel.isUploading || viewModel.isConverting)
             }
-        }
-        .alert(isPresented: $showAlert) {
-            Alert(
-                title: Text("Unsupported File Type"),
-                message: Text("The chosen file type isn't supported. Would you like to upload it to the server for conversion?"),
-                primaryButton: .default(Text("Convert file")) {
-                    if let file = selectedFile {
-                        convertFileToTxt(file: file)
-                    }
-                },
-                secondaryButton: .cancel()
-            )
         }
     }
 
@@ -296,7 +259,6 @@ extension HomeView: HomeViewModelToView {
         do {
             modelContext.insert(file)
             try modelContext.save()
-            selectedFileType = .text
         } catch {
             BannerManager.showError(message: error.localizedDescription)
             print("Append file error: \(error.localizedDescription)")
