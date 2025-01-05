@@ -117,9 +117,14 @@ struct HomeView: View {
                                                 .font(.caption)
                                                 .foregroundColor(.secondary)
                                         } else {
-                                            Text("Never opened")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
+                                            HStack {
+                                                Circle()
+                                                    .fill(Color.blue)
+                                                    .frame(width: 8, height: 8)
+                                                Text("Never opened")
+                                                    .font(.caption)
+                                                    .foregroundColor(.secondary)
+                                            }
                                         }
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
