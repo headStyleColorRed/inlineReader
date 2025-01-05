@@ -72,7 +72,7 @@ struct HomeView: View {
                                     .padding(5)
 
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(file.name ?? "")
+                                    Text(fileName(file: file))
                                         .font(.headline)
                                         .lineLimit(2)
                                         .foregroundColor(.primary)
@@ -95,17 +95,20 @@ struct HomeView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .contextMenu {
-
-                            Button(action: {
-                                uploadFile(file: file)
-                            }) {
-                                Label("Upload PDF", systemImage: "arrow.up.doc")
+                            if canUploadFile(file: file) {
+                                Button(action: {
+                                    uploadFile(file: file)
+                                }) {
+                                    Label("Upload PDF", systemImage: "arrow.up.doc")
+                                }
                             }
 
-                            Button(action: {
-                                convertFileToTxt(file: file)
-                            }) {
-                                Label("Convert to txt", systemImage: "document.viewfinder.fill")
+                            if canConvertFileToTxt(file: file) {
+                                Button(action: {
+                                    convertFileToTxt(file: file)
+                                }) {
+                                    Label("Convert to txt", systemImage: "document.viewfinder.fill")
+                                }
                             }
 
                             Button(role: .destructive) {
@@ -132,14 +135,15 @@ struct HomeView: View {
             TextReaderView(file: file)
                 .environmentObject(mainViewModel)
         }
-//        .overlay {
-//            if viewModel.isUploading {
-//                ProgressView("Uploading PDF...")
-//                    .padding()
-//                    .background(.regularMaterial)
-//                    .cornerRadius(8)
-//            }
-//        }
+        .overlay {
+            if viewModel.isUploading || viewModel.isConverting {
+                ProgressView(viewModel.isUploading ? "Uploading PDF..." : "Converting to txt...")
+                    .padding()
+                    .background(.regularMaterial)
+                    .cornerRadius(8)
+                    .animation(.easeInOut(duration: 0.5), value: viewModel.isUploading || viewModel.isConverting)
+            }
+        }
     }
 
     private func updateGridColumns() {
@@ -222,6 +226,26 @@ struct HomeView: View {
                 modelContext.rollback()
             }
         }
+    }
+
+    func canUploadFile(file: File) -> Bool {
+        guard let contentType = file.fullURL?.fileType else { return false }
+        return file.serverId == nil && contentType == .pdf
+    }
+
+    func canConvertFileToTxt(file: File) -> Bool {
+        guard let contentType = file.fullURL?.fileType else { return false }
+        // Check that the file with same name but with .txt extension doesn't exist in the [File]
+        let txtFile = files.first(where: {
+            $0.name == file.name && $0.fullURL?.fileType == .text
+        })
+        return file.serverId != nil && contentType == .pdf && txtFile == nil
+    }
+
+    func fileName(file: File) -> String {
+        guard let url = file.fullURL, url.fileType == .text else { return file.name ?? "" }
+        return (file.name ?? "")
+
     }
 }
 
