@@ -54,33 +54,6 @@ class HomeViewModel: ObservableObject {
         return nil
     }
 
-    func getFileAsTxt(file: File) {
-        print("1. Starting file get from to TXT")
-        isConverting = true
-
-        Task {
-            do {
-                guard let blobId = file.blobId else {
-                    print("Failed to get blobId")
-                    throw "Please upload the PDF first, could not find blobId"
-                }
-                print("2. Converting file with blobId: \(blobId)")
-                let document = try await network.getFileAsTxt(id: blobId)
-                print("3. File converted successfully on server")
-                BannerManager.showSuccess(message: "File \(document.name ?? "") converted to txt successfully")
-
-                try await createFileLocaly(document: document, originalFile: file)
-
-            } catch {
-                BannerManager.showError(message: error.localizedDescription)
-                print("Convert error: \(error.localizedDescription)")
-            }
-
-            isConverting = false
-            print("Conversion process completed")
-        }
-    }
-
     func convertFileToTxt(file: File) {
         isConverting = true
         var files: [GraphQLFile] = Array.init()
@@ -90,7 +63,7 @@ class HomeViewModel: ObservableObject {
         let document = PDFDocument(url: url)
         guard let pdfFile = document?.asGraphQLFile(fieldName: "file", fileName: url.lastPathComponent) else { return }
 
-        isUploading = true
+        isConverting = true
 
         files.append(pdfFile)
 
@@ -100,12 +73,12 @@ class HomeViewModel: ObservableObject {
                 let document = try await network.convertFileToTxt(url: url, files: files)
                 print("Document successfully converted in server: \(document.name ?? "")")
                 try await createFileLocaly(document: document, originalFile: file)
+                self.isConverting = false
             } catch {
                 BannerManager.showError(message: error.localizedDescription)
                 print("Upload error: \(error.localizedDescription)")
+                self.isConverting = false
             }
-
-            self.isConverting = false
         }
     }
 
