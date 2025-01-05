@@ -17,7 +17,7 @@ struct HomeView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State private var gridColumns: [GridItem] = []
     @State private var readFile: File? = nil
-
+    
     var sortedFiles: [File] {
         files.sorted { file1, file2 in
             switch (file1.lastOpened, file2.lastOpened) {
@@ -32,7 +32,7 @@ struct HomeView: View {
             }
         }
     }
-
+    
     var body: some View {
         ScrollView {
             if files.isEmpty {
@@ -86,7 +86,7 @@ struct HomeView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                                     .shadow(radius: 4)
                                     .padding(5)
-
+                                
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(fileName(file: file))
                                         .font(.headline)
@@ -118,7 +118,7 @@ struct HomeView: View {
                                     Label("Upload PDF", systemImage: "arrow.up.doc")
                                 }
                             }
-
+                            
                             if canConvertFileToTxt(file: file) {
                                 Button(action: {
                                     convertFileToTxt(file: file)
@@ -126,7 +126,7 @@ struct HomeView: View {
                                     Label("Convert to txt", systemImage: "document.viewfinder.fill")
                                 }
                             }
-
+                            
                             Button(role: .destructive) {
                                 deleteFile(file: file)
                             } label: {
@@ -161,7 +161,7 @@ struct HomeView: View {
             }
         }
     }
-
+    
     private func updateGridColumns() {
         if horizontalSizeClass == .compact {
             // iPhone layout
@@ -171,7 +171,7 @@ struct HomeView: View {
             gridColumns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 3)
         }
     }
-
+    
     private func uploadFile(file: File) {
         Task {
             let document = await viewModel.uploadPDF(file: file)
@@ -185,7 +185,7 @@ struct HomeView: View {
             }
         }
     }
-
+    
     private func convertFileToTxt(file: File) {
         guard file.serverId != nil else {
             BannerManager.showError(message: "Please upload the PDF first")
@@ -193,11 +193,11 @@ struct HomeView: View {
         }
         viewModel.convertFileToTxt(file: file)
     }
-
+    
     private func deleteFile(file: File) {
         // Delete the file from the model context
         modelContext.delete(file)
-
+        
         // Define a function to save the context
         let saveContext: () -> Void = {
             do {
@@ -208,7 +208,7 @@ struct HomeView: View {
                 modelContext.rollback()
             }
         }
-
+        
         // Remove the file from the file system
         if let fileURL = file.fullURL {
             do {
@@ -218,12 +218,12 @@ struct HomeView: View {
                 print("Error removing file from documents directory: \(error.localizedDescription)")
             }
         }
-
+        
         // Save the context if the file is not on the server
         if file.serverId == nil {
             saveContext()
         }
-
+        
         // If the file is on the server, delete it from there as well
         Task {
             do {
@@ -243,12 +243,12 @@ struct HomeView: View {
             }
         }
     }
-
+    
     func canUploadFile(file: File) -> Bool {
         guard let contentType = file.fullURL?.fileType else { return false }
         return file.serverId == nil && contentType == .pdf
     }
-
+    
     func canConvertFileToTxt(file: File) -> Bool {
         guard let contentType = file.fullURL?.fileType else { return false }
         // Check that the file with same name but with .txt extension doesn't exist in the [File]
@@ -257,11 +257,11 @@ struct HomeView: View {
         })
         return file.serverId != nil && contentType == .pdf && txtFile == nil
     }
-
+    
     func fileName(file: File) -> String {
         guard let url = file.fullURL, url.fileType == .text else { return file.name ?? "" }
         return (file.name ?? "")
-
+        
     }
 }
 
