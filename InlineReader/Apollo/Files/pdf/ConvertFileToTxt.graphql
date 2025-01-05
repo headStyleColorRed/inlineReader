@@ -1,0 +1,14 @@
+mutation ConvertFileToTxt($file: Upload!) {
+	private {
+		convertFileToTxt(file: $file) {
+			id
+			name
+			url
+			blobId
+			contentType
+			byteSize
+			checksum
+		}
+	}
+}
+
