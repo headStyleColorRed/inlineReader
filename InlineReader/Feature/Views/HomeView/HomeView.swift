@@ -93,18 +93,15 @@ struct HomeView: View {
                                                         .foregroundColor(.accentColor)
                                                         .padding(20)
                                                 }
-                                            }
-                                                .if(file.serverId == nil) { view in
-                                                    view.overlay(alignment: .bottom) {
-                                                        HStack {
-                                                            Text("\(file.urlExtension)")
-                                                                .bold()
-                                                                .font(.system(size: 12))
-                                                        }
-                                                        .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
-                                                        .opacity(0.4)
-                                                    }
+                                            }.overlay(alignment: .bottom) {
+                                                HStack {
+                                                    Text("\(file.urlExtension)")
+                                                        .bold()
+                                                        .font(.system(size: 12))
                                                 }
+                                                .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                                                .opacity(0.4)
+                                            }
                                         )
                                         .clipShape(RoundedRectangle(cornerRadius: 8))
                                         .shadow(radius: 4)
