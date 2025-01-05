@@ -175,19 +175,50 @@ struct HomeView: View {
     }
 
     private func deleteFile(file: File) {
+        // Delete the file from the model context
         modelContext.delete(file)
 
+        // Define a function to save the context
+        let saveContext: () -> Void = {
+            do {
+                try modelContext.save()
+            } catch {
+                BannerManager.showError(message: error.localizedDescription)
+                print("Delete error: \(error.localizedDescription)")
+                modelContext.rollback()
+            }
+        }
+
+        // Remove the file from the file system
+        if let fileURL = file.fullURL {
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+                print("File removed from documents directory")
+            } catch {
+                print("Error removing file from documents directory: \(error.localizedDescription)")
+            }
+        }
+
+        // Save the context if the file is not on the server
+        if file.serverId == nil {
+            saveContext()
+        }
+
+        // If the file is on the server, delete it from there as well
         Task {
             do {
                 guard let documentId = file.serverId else {
                     throw "Please upload the PDF first, could not find documentId"
                 }
                 try await viewModel.network.deleteFile(id: documentId)
-                try modelContext.save()
+                saveContext()
             } catch {
                 BannerManager.showError(message: error.localizedDescription)
+                if error.localizedDescription.contains("Couldn't find Document") {
+                    saveContext()
+                    return
+                }
                 print("Delete error: \(error.localizedDescription)")
-
                 modelContext.rollback()
             }
         }
@@ -195,14 +226,13 @@ struct HomeView: View {
 }
 
 extension HomeView: HomeViewModelToView {
-    func createNewFileFrom(document: Document) {
+    func appendFileToLibrary(file: File) {
         do {
-            let file = File(from: document)
             modelContext.insert(file)
             try modelContext.save()
         } catch {
             BannerManager.showError(message: error.localizedDescription)
-            print("Create new file error: \(error.localizedDescription)")
+            print("Append file error: \(error.localizedDescription)")
         }
     }
 }
