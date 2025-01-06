@@ -43,21 +43,18 @@ struct SidebarView: View {
                               allowsMultipleSelection: false) { result in
                     fileImported(result: result)
                 }
+
+                Button {
+                    viewModel.isSignInSheetPresented = true
+                } label: {
+                    Label("Login", systemImage: "person.circle")
+                }
             }
             .navigationDestination(item: $navigationDestination) { destination in
                 switch destination {
                 case .home:
                     HomeView()
                         .environmentObject(viewModel)
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        viewModel.isSignInSheetPresented = true
-                    }) {
-                        Image(systemName: "person.circle")
-                    }
                 }
             }
         } detail: {
