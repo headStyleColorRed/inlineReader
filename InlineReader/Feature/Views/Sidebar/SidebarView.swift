@@ -80,7 +80,7 @@ class SidebarViewModel: ObservableObject {
                     print("Account created for user: \(user.email ?? "") with id \(user.id ?? -1)")
                     self.isLoading = false
                     Session.shared.currentUser = user
-                    
+
                 }
             } catch let error {
                 DispatchQueue.main.async {
@@ -108,6 +108,7 @@ struct SidebarView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var isFilePickerPresented = false
     @State private var navigationDestination: NavigationDestination?
+    @State var isOnboardingPresented = false
     @Query private var files: [File]
 
     enum NavigationDestination: Hashable {
@@ -158,9 +159,23 @@ struct SidebarView: View {
         .sheet(isPresented: $viewModel.isSignInSheetPresented) {
             LoginView()
         }
+        .fullScreenCover(isPresented: $isOnboardingPresented) {
+            OnboardingView()
+        }
         .onAppear {
-            guard !files.isEmpty else { return }
-            navigationDestination = .home
+            showOnboardingIfNeeded()
+        }
+    }
+
+    // Will show the onboarding view if it is the first time the user is using the app
+    private func showOnboardingIfNeeded() {
+        // Check UserDefaults to see if the user has already seen the onboarding
+        let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
+        if true !hasSeenOnboarding {
+            // Show the onboarding view
+            isOnboardingPresented = true
+            // Set the hasSeenOnboarding flag to true
+            UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
         }
     }
 
