@@ -38,12 +38,10 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             if files.isEmpty {
-                Spacer()
                 Text("No files available, import a TXT or PDF file to get started")
                     .font(.headline)
                     .foregroundColor(.secondary)
                     .padding()
-                Spacer()
             } else {
                 LazyVGrid(columns: gridColumns, spacing: 16) {
                     ForEach(sortedFiles) { file in
